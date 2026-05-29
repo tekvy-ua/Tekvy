@@ -472,7 +472,17 @@ footer{
     <li><a href="#delivery">Доставка</a></li>
     <li><a href="#contacts">Контакти</a></li>
   </ul>
-  <a href="#contacts" class="nav-cta">Написати нам</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="position:relative;">
+      <input id="searchInput" type="text" placeholder="Пошук товарів..." oninput="searchProducts(this.value)" style="padding:10px 16px 10px 38px;border:2px solid #E5E7EB;border-radius:50px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:200px;transition:all .25s;" onfocus="this.style.borderColor='#6C2BD9';this.style.width='240px';document.getElementById('searchResults').style.display='block'" onblur="this.style.borderColor='#E5E7EB';this.style.width='200px';setTimeout(()=>{document.getElementById('searchResults').style.display='none'},200)"/>
+      <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div id="searchResults" style="display:none;position:absolute;top:calc(100% + 8px);left:0;background:white;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.12);border:1px solid #EDE9FE;overflow:hidden;z-index:500;min-width:280px;"></div>
+    </div>
+    <button onclick="openCart()" style="position:relative;background:var(--primary-pale);border:none;width:44px;height:44px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;" onmouseover="this.style.background='#e0d4ff'" onmouseout="this.style.background='var(--primary-pale)'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+      <span id="cartBadge" style="display:none;position:absolute;top:-6px;right:-6px;background:#EC4899;color:white;font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;">0</span>
+    </button>
+  </div>
 </nav>
 
 <!-- ===== PAGE 1: HERO ===== -->
@@ -602,7 +612,7 @@ footer{
         </div>
         <div class="prod-foot">
           <div class="prod-price">₴985</div>
-          <button class="btn-cart">До кошика</button>
+          <button class="btn-cart" onclick="addToCart('Павербанк Hoco J136B Sirui 30000mAh', '₴985', 985)">До кошика</button>
         </div>
       </div>
     </div>
@@ -616,7 +626,7 @@ footer{
         <div class="prod-cat">Авто-гаджети</div>
         <div class="prod-foot">
           <div class="prod-price">₴3 290</div>
-          <button class="btn-cart">До кошика</button>
+          <button class="btn-cart" onclick="addToCart('Навушники', '₴3 290', 3290)">До кошика</button>
         </div>
       </div>
     </div>
@@ -629,7 +639,7 @@ footer{
         <div class="prod-cat">Аксесуари</div>
         <div class="prod-foot">
           <div class="prod-price">₴490</div>
-          <button class="btn-cart">До кошика</button>
+          <button class="btn-cart" onclick="addToCart('Чохол Premium', '₴490', 490)">До кошика</button>
         </div>
       </div>
     </div>
@@ -643,7 +653,7 @@ footer{
         <div class="prod-cat">Авто-гаджети</div>
         <div class="prod-foot">
           <div class="prod-price">₴2 190</div>
-          <button class="btn-cart">До кошика</button>
+          <button class="btn-cart" onclick="addToCart('Веб-камера', '₴2 190', 2190)">До кошика</button>
         </div>
       </div>
     </div>
@@ -687,7 +697,7 @@ footer{
   <div class="delivery-grid">
     <div class="del-card"><div class="del-num">01</div><div class="del-title">Нова Пошта</div><div class="del-desc">Доставка у відділення або поштомат. 1–2 дні. Можна оплатити при отриманні.</div></div>
     <div class="del-card"><div class="del-num">02</div><div class="del-title">Укрпошта</div><div class="del-desc">2–4 дні по всій Україні. Доступна у кожному місті та селі.</div></div>
-    <div class="del-card"><div class="del-num">03</div><div class="del-title">Самовивіз</div><div class="del-desc">Безкоштовно. Заберіть замовлення у зручний для вас час без очікування.</div></div>
+
   </div>
 </section>
 
@@ -770,6 +780,481 @@ footer{
   window.addEventListener('scroll', () => {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
   });
+</script>
+<!-- ORDER MODAL -->
+<div id="orderModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:24px;padding:36px;max-width:480px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">
+    
+    <!-- Close -->
+    <button onclick="closeModal()" style="position:absolute;top:16px;right:16px;background:#f1f1f1;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+
+    <!-- Header -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:12px;font-weight:700;letter-spacing:2px;color:#6C2BD9;text-transform:uppercase;margin-bottom:8px;">Оформлення замовлення</div>
+      <h3 id="modalProductName" style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#0D0D1A;margin-bottom:4px;"></h3>
+      <div id="modalProductPrice" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></div>
+    </div>
+
+    <!-- Form -->
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">👤 Ваше ім'я *</label>
+        <input id="orderName" type="text" placeholder="Іван Іваненко" style="width:100%;padding:12px 16px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+      </div>
+
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">📱 Номер телефону *</label>
+        <input id="orderPhone" type="tel" placeholder="+38 (099) 000-00-00" style="width:100%;padding:12px 16px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+      </div>
+
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">🏙️ Місто *</label>
+        <input id="orderCity" type="text" placeholder="Київ" style="width:100%;padding:12px 16px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+      </div>
+
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">📦 Відділення Нової Пошти *</label>
+        <input id="orderNP" type="text" placeholder="Відділення №1 або поштомат" style="width:100%;padding:12px 16px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+      </div>
+
+      <div>
+        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:10px;">💳 Спосіб оплати *</label>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <label style="display:flex;align-items:flex-start;gap:12px;padding:14px;border:2px solid #E5E7EB;border-radius:12px;cursor:pointer;transition:border .2s;" id="pay1" onclick="selectPayment('prepay')">
+            <input type="radio" name="payment" value="prepay" style="margin-top:2px;accent-color:#6C2BD9;"/>
+            <div>
+              <div style="font-weight:700;font-size:14px;">💸 Передплата</div>
+              <div style="font-size:12px;color:#6B7280;margin-top:2px;">Оплата на картку до відправки. Відправляємо того ж дня.</div>
+            </div>
+          </label>
+          <label style="display:flex;align-items:flex-start;gap:12px;padding:14px;border:2px solid #E5E7EB;border-radius:12px;cursor:pointer;transition:border .2s;" id="pay2" onclick="selectPayment('cod')">
+            <input type="radio" name="payment" value="cod" style="margin-top:2px;accent-color:#6C2BD9;"/>
+            <div>
+              <div style="font-weight:700;font-size:14px;">📬 Накладений платіж</div>
+              <div style="font-size:12px;color:#6B7280;margin-top:2px;">Оплата при отриманні у відділенні. +20 грн комісія Нової Пошти.</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div id="orderError" style="display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px;font-size:13px;color:#DC2626;"></div>
+
+      <button onclick="submitOrder()" style="background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:16px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;box-shadow:0 6px 20px rgba(108,43,217,0.35);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        ✅ Підтвердити замовлення
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div id="successModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:24px;padding:44px 36px;max-width:420px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.2);">
+    <div style="font-size:64px;margin-bottom:16px;">🎉</div>
+    <h3 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:12px;">Замовлення прийнято!</h3>
+    <p style="color:#6B7280;font-size:15px;line-height:1.6;margin-bottom:8px;">Дякуємо за покупку! Ми зв'яжемось з вами найближчим часом для підтвердження.</p>
+    <p style="color:#6B7280;font-size:14px;margin-bottom:28px;">📞 <strong>+380 98 060 62 46</strong></p>
+    <button onclick="closeSuccess()" style="background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:14px 36px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
+      Чудово!
+    </button>
+  </div>
+</div>
+
+<script>
+function openModal(name, price) {
+  document.getElementById('modalProductName').textContent = name;
+  document.getElementById('modalProductPrice').textContent = price;
+  document.getElementById('orderModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  // reset form
+  ['orderName','orderPhone','orderCity','orderNP'].forEach(id => document.getElementById(id).value = '');
+  document.querySelectorAll('input[name="payment"]').forEach(r => r.checked = false);
+  document.getElementById('orderError').style.display = 'none';
+}
+function closeModal() {
+  document.getElementById('orderModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function closeSuccess() {
+  document.getElementById('successModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function selectPayment(type) {
+  document.getElementById('pay1').style.borderColor = type === 'prepay' ? '#6C2BD9' : '#E5E7EB';
+  document.getElementById('pay2').style.borderColor = type === 'cod' ? '#6C2BD9' : '#E5E7EB';
+}
+function submitOrder() {
+  const name = document.getElementById('orderName').value.trim();
+  const phone = document.getElementById('orderPhone').value.trim();
+  const city = document.getElementById('orderCity').value.trim();
+  const np = document.getElementById('orderNP').value.trim();
+  const payment = document.querySelector('input[name="payment"]:checked');
+  const err = document.getElementById('orderError');
+
+  if (!name || !phone || !city || !np || !payment) {
+    err.textContent = '⚠️ Будь ласка, заповніть всі поля та оберіть спосіб оплати.';
+    err.style.display = 'block';
+    return;
+  }
+<!-- FLOATING CHAT BUTTON -->
+<!-- DRAGGABLE CHAT BUTTON -->
+<div id="chatBtn" style="position:fixed;bottom:28px;right:28px;z-index:9997;user-select:none;touch-action:none;">
+  <button id="chatBtnInner" onclick="toggleChat(event)" style="background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;border-radius:50px;padding:14px 20px;font-size:15px;font-weight:700;cursor:grab;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:10px;box-shadow:0 8px 30px rgba(108,43,217,0.5);transition:box-shadow .25s;white-space:nowrap;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Чат
+  </button>
+</div>
+
+<!-- CHAT POPUP -->
+<div id="chatPopup" style="display:none;position:fixed;bottom:90px;right:28px;z-index:9996;background:white;border-radius:20px;box-shadow:0 16px 60px rgba(0,0,0,0.18);width:290px;overflow:hidden;border:1px solid #EDE9FE;">
+  <div style="background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);padding:16px 18px;display:flex;align-items:center;gap:12px;">
+    <div style="width:40px;height:40px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">&#x1F6CD;</div>
+    <div style="flex:1;"><div style="color:white;font-weight:700;font-size:15px;">Tekvy</div><div style="color:rgba(255,255,255,0.8);font-size:12px;">&#x26AB; &#x41E;&#x43D;&#x43B;&#x430;&#x439;&#x43D; &middot; &#x412;&#x456;&#x434;&#x43F;&#x43E;&#x432;&#x456;&#x43C;&#x43E; &#x448;&#x432;&#x438;&#x434;&#x43A;&#x43E;</div></div>
+    <button onclick="toggleChat(event)" style="background:rgba(255,255,255,0.2);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;flex-shrink:0;">&times;</button>
+  </div>
+  <div style="padding:18px;">
+    <div style="background:#F3F4F6;border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:13px;color:#374151;line-height:1.5;margin-bottom:14px;">
+      &#x1F44B; &#x41F;&#x440;&#x438;&#x432;&#x456;&#x442;! &#x41C;&#x430;&#x454;&#x442;&#x435; &#x43F;&#x438;&#x442;&#x430;&#x43D;&#x43D;&#x44F; &#x430;&#x431;&#x43E; &#x445;&#x43E;&#x447;&#x435;&#x442;&#x435; &#x437;&#x440;&#x43E;&#x431;&#x438;&#x442;&#x438; &#x437;&#x430;&#x43C;&#x43E;&#x432;&#x43B;&#x435;&#x43D;&#x43D;&#x44F;? &#x41F;&#x438;&#x448;&#x456;&#x442;&#x44C; &#x43D;&#x430;&#x43C;!
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <a href="tel:+380980606246" style="display:flex;align-items:center;gap:12px;background:#F9F7FF;border-radius:12px;padding:11px 14px;text-decoration:none;" onmouseover="this.style.background='#EDE9FE'" onmouseout="this.style.background='#F9F7FF'">
+        <div style="width:34px;height:34px;background:#6C2BD9;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.72A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.09a16 16 0 006 6l.56-.56a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+        <div><div style="font-weight:700;font-size:13px;color:#0D0D1A;">&#x422;&#x435;&#x43B;&#x435;&#x444;&#x43E;&#x43D;</div><div style="font-size:11px;color:#6B7280;">+380 98 060 62 46</div></div>
+      </a>
+      <a href="https://t.me/+380980606246" target="_blank" style="display:flex;align-items:center;gap:12px;background:#E8F5FF;border-radius:12px;padding:11px 14px;text-decoration:none;" onmouseover="this.style.background='#D0EBFF'" onmouseout="this.style.background='#E8F5FF'">
+        <div style="width:34px;height:34px;background:#229ED9;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.12.57-.47.71-.95.44l-2.62-1.93-1.27 1.22c-.14.14-.26.26-.53.26l.19-2.68 4.84-4.37c.21-.19-.05-.29-.32-.1L7.46 15.05l-2.57-.8c-.56-.17-.57-.56.12-.83l10.03-3.87c.47-.17.88.11.6.25z"/></svg></div>
+        <div><div style="font-weight:700;font-size:13px;color:#0D0D1A;">Telegram</div><div style="font-size:11px;color:#6B7280;">&#x41D;&#x430;&#x43F;&#x438;&#x441;&#x430;&#x442;&#x438; &#x432; Telegram</div></div>
+      </a>
+      <a href="viber://chat?number=380980606246" target="_blank" style="display:flex;align-items:center;gap:12px;background:#F3F0FF;border-radius:12px;padding:11px 14px;text-decoration:none;" onmouseover="this.style.background='#EAE5FF'" onmouseout="this.style.background='#F3F0FF'">
+        <div style="width:34px;height:34px;background:#7360F2;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M11.4 2C6.67 2 3.07 5.28 3.07 9.97c0 2.48 1.05 4.68 2.76 6.2V19l2.71-1.5c.72.2 1.49.31 2.28.31h.27c4.73 0 8.33-3.28 8.33-7.97S16.13 2 11.4 2z"/></svg></div>
+        <div><div style="font-weight:700;font-size:13px;color:#0D0D1A;">Viber</div><div style="font-size:11px;color:#6B7280;">&#x41D;&#x430;&#x43F;&#x438;&#x441;&#x430;&#x442;&#x438; &#x443; Viber</div></div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div id="cartModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:24px;padding:32px;max-width:500px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">
+    <button onclick="closeCart()" style="position:absolute;top:16px;right:16px;background:#f1f1f1;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;">✕</button>
+    <div style="font-size:12px;font-weight:700;letter-spacing:2px;color:#6C2BD9;text-transform:uppercase;margin-bottom:8px;">Кошик</div>
+    <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:24px;">Ваші товари</h3>
+    <div id="cartItems" style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;"></div>
+    <div id="cartEmpty" style="text-align:center;padding:32px;color:#9CA3AF;">
+      <div style="font-size:48px;margin-bottom:12px;">🛒</div>
+      <div style="font-weight:600;">Кошик порожній</div>
+      <div style="font-size:13px;margin-top:4px;">Додайте товари зі сторінки</div>
+    </div>
+    <div id="cartFooter" style="display:none;border-top:2px solid #F3F4F6;padding-top:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <span style="font-weight:600;color:#6B7280;">Разом:</span>
+        <span id="cartTotal" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></span>
+      </div>
+      <button onclick="proceedToOrder()" style="width:100%;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:16px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 6px 20px rgba(108,43,217,0.35);">
+        ✅ Оформити замовлення
+      </button>
+    </div>
+    <!-- Contacts in cart -->
+    <div style="margin-top:24px;padding-top:20px;border-top:2px solid #F3F4F6;">
+      <div style="font-size:12px;font-weight:700;color:#6B7280;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Зв'язатись з нами</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <a href="tel:+380980606246" style="display:flex;align-items:center;gap:12px;background:#F9F7FF;border-radius:12px;padding:12px 14px;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='#EDE9FE'" onmouseout="this.style.background='#F9F7FF'">
+          <div style="width:36px;height:36px;background:#6C2BD9;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.72A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.09a16 16 0 006 6l.56-.56a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:13px;color:#0D0D1A;">Телефон</div>
+            <div style="font-size:12px;color:#6B7280;">+380 98 060 62 46</div>
+          </div>
+        </a>
+        <a href="https://t.me/+380980606246" target="_blank" style="display:flex;align-items:center;gap:12px;background:#E8F5FF;border-radius:12px;padding:12px 14px;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='#D0EBFF'" onmouseout="this.style.background='#E8F5FF'">
+          <div style="width:36px;height:36px;background:#229ED9;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.12.57-.47.71-.95.44l-2.62-1.93-1.27 1.22c-.14.14-.26.26-.53.26l.19-2.68 4.84-4.37c.21-.19-.05-.29-.32-.1L7.46 15.05l-2.57-.8c-.56-.17-.57-.56.12-.83l10.03-3.87c.47-.17.88.11.6.25z"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:13px;color:#0D0D1A;">Telegram</div>
+            <div style="font-size:12px;color:#6B7280;">Написати в Telegram</div>
+          </div>
+        </a>
+        <a href="viber://chat?number=380980606246" target="_blank" style="display:flex;align-items:center;gap:12px;background:#F3F0FF;border-radius:12px;padding:12px 14px;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='#EAE5FF'" onmouseout="this.style.background='#F3F0FF'">
+          <div style="width:36px;height:36px;background:#7360F2;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M11.4 2C6.67 2 3.07 5.28 3.07 9.97c0 2.48 1.05 4.68 2.76 6.2V19l2.71-1.5c.72.2 1.49.31 2.28.31h.27c4.73 0 8.33-3.28 8.33-7.97S16.13 2 11.4 2z"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:13px;color:#0D0D1A;">Viber</div>
+            <div style="font-size:12px;color:#6B7280;">Написати у Viber</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Chat toggle (kept for compatibility)
+function toggleChat() {}
+
+// ===== DRAGGABLE CHAT =====
+let chatDragging = false;
+let chatDragOffsetX = 0, chatDragOffsetY = 0;
+let chatMoved = false;
+
+const chatBtn = document.getElementById('chatBtn');
+
+chatBtn.addEventListener('mousedown', function(e) {
+  chatDragging = true;
+  chatMoved = false;
+  chatDragOffsetX = e.clientX - chatBtn.getBoundingClientRect().left;
+  chatDragOffsetY = e.clientY - chatBtn.getBoundingClientRect().top;
+  chatBtn.style.cursor = 'grabbing';
+  e.preventDefault();
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (!chatDragging) return;
+  chatMoved = true;
+  let x = e.clientX - chatDragOffsetX;
+  let y = e.clientY - chatDragOffsetY;
+  x = Math.max(0, Math.min(window.innerWidth - chatBtn.offsetWidth, x));
+  y = Math.max(0, Math.min(window.innerHeight - chatBtn.offsetHeight, y));
+  chatBtn.style.left = x + 'px';
+  chatBtn.style.top = y + 'px';
+  chatBtn.style.right = 'auto';
+  chatBtn.style.bottom = 'auto';
+  // Move popup near button
+  const popup = document.getElementById('chatPopup');
+  popup.style.left = x + 'px';
+  popup.style.top = Math.max(10, y - popup.offsetHeight - 10) + 'px';
+  popup.style.right = 'auto';
+  popup.style.bottom = 'auto';
+});
+
+document.addEventListener('mouseup', function() {
+  if (chatDragging) {
+    chatDragging = false;
+    chatBtn.style.cursor = 'grab';
+  }
+});
+
+// Touch support
+chatBtn.addEventListener('touchstart', function(e) {
+  const t = e.touches[0];
+  chatDragging = true;
+  chatMoved = false;
+  chatDragOffsetX = t.clientX - chatBtn.getBoundingClientRect().left;
+  chatDragOffsetY = t.clientY - chatBtn.getBoundingClientRect().top;
+}, { passive: true });
+
+document.addEventListener('touchmove', function(e) {
+  if (!chatDragging) return;
+  chatMoved = true;
+  const t = e.touches[0];
+  let x = t.clientX - chatDragOffsetX;
+  let y = t.clientY - chatDragOffsetY;
+  x = Math.max(0, Math.min(window.innerWidth - chatBtn.offsetWidth, x));
+  y = Math.max(0, Math.min(window.innerHeight - chatBtn.offsetHeight, y));
+  chatBtn.style.left = x + 'px';
+  chatBtn.style.top = y + 'px';
+  chatBtn.style.right = 'auto';
+  chatBtn.style.bottom = 'auto';
+}, { passive: true });
+
+document.addEventListener('touchend', function() { chatDragging = false; });
+
+function toggleChat(e) {
+  if (chatMoved) { chatMoved = false; return; }
+  const popup = document.getElementById('chatPopup');
+  const btn = document.getElementById('chatBtn');
+  const isVisible = popup.style.display !== 'none';
+  if (isVisible) {
+    popup.style.display = 'none';
+  } else {
+    popup.style.display = 'block';
+    const r = btn.getBoundingClientRect();
+    popup.style.left = Math.max(10, r.left) + 'px';
+    popup.style.top = Math.max(10, r.top - popup.offsetHeight - 10) + 'px';
+    popup.style.right = 'auto';
+    popup.style.bottom = 'auto';
+  }
+}
+
+// ===== SEARCH =====
+const allProducts = [
+  { name: 'Павербанк Hoco J136B Sirui 30000mAh', price: '₴985', priceNum: 985, cat: 'Павербанки і Зарядні станції' },
+  { name: 'Навушники', price: '₴3 290', priceNum: 3290, cat: 'Навушники' },
+  { name: 'Чохол Premium', price: '₴490', priceNum: 490, cat: 'Аксесуари' },
+  { name: 'Веб-камера', price: '₴2 190', priceNum: 2190, cat: 'Електроніка' },
+];
+
+function searchProducts(query) {
+  const box = document.getElementById('searchResults');
+  if (!query.trim()) { box.innerHTML = ''; box.style.display = 'none'; return; }
+  const q = query.toLowerCase();
+  const found = allProducts.filter(p => p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
+  box.style.display = 'block';
+  if (found.length === 0) {
+    box.innerHTML = '<div style="padding:16px;text-align:center;color:#9CA3AF;font-size:13px;">😕 Нічого не знайдено</div>';
+    return;
+  }
+  box.innerHTML = found.map(p => `
+    <div onclick="addToCart('${p.name}','${p.price}',${p.priceNum})" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid #F3F4F6;" onmouseover="this.style.background='#F9F7FF'" onmouseout="this.style.background='white'">
+      <div>
+        <div style="font-weight:700;font-size:13px;color:#0D0D1A;">${p.name}</div>
+        <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">${p.cat}</div>
+      </div>
+      <div style="font-weight:800;font-size:14px;color:#6C2BD9;font-family:'Syne',sans-serif;">${p.price}</div>
+    </div>
+  `).join('');
+}
+
+// ===== CART =====
+let cart = [];
+
+function addToCart(name, price, priceNum) {
+  const existing = cart.find(i => i.name === name);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ name, price, priceNum, qty: 1 });
+  }
+  updateCartBadge();
+  renderCart();
+  openCart();
+}
+
+function updateCartBadge() {
+  const badge = document.getElementById('cartBadge');
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  if (total > 0) {
+    badge.style.display = 'flex';
+    badge.textContent = total;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function renderCart() {
+  const container = document.getElementById('cartItems');
+  const empty = document.getElementById('cartEmpty');
+  const footer = document.getElementById('cartFooter');
+  const totalEl = document.getElementById('cartTotal');
+
+  if (cart.length === 0) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    footer.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  footer.style.display = 'block';
+
+  container.innerHTML = cart.map((item, idx) => `
+    <div style="display:flex;align-items:center;gap:14px;padding:14px;background:#F9F7FF;border-radius:14px;border:1px solid #EDE9FE;">
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:14px;margin-bottom:3px;">${item.name}</div>
+        <div style="font-size:13px;color:#6C2BD9;font-weight:700;">${item.price}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button onclick="changeQty(${idx},-1)" style="width:28px;height:28px;border-radius:8px;border:2px solid #E5E7EB;background:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">−</button>
+        <span style="font-weight:700;font-size:15px;min-width:20px;text-align:center;">${item.qty}</span>
+        <button onclick="changeQty(${idx},1)" style="width:28px;height:28px;border-radius:8px;border:none;background:#6C2BD9;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">+</button>
+      </div>
+      <button onclick="removeFromCart(${idx})" style="background:#FEE2E2;border:none;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;">🗑</button>
+    </div>
+  `).join('');
+
+  const total = cart.reduce((s, i) => s + i.priceNum * i.qty, 0);
+  totalEl.textContent = '₴' + total.toLocaleString('uk-UA');
+}
+
+function changeQty(idx, delta) {
+  cart[idx].qty += delta;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  updateCartBadge();
+  renderCart();
+}
+
+function removeFromCart(idx) {
+  cart.splice(idx, 1);
+  updateCartBadge();
+  renderCart();
+}
+
+function openCart() {
+  renderCart();
+  document.getElementById('cartModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cartModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function proceedToOrder() {
+  closeCart();
+  const names = cart.map(i => `${i.name} ×${i.qty}`).join(', ');
+  const total = cart.reduce((s, i) => s + i.priceNum * i.qty, 0);
+  openModal(names, '₴' + total.toLocaleString('uk-UA'));
+}
+
+// ===== ORDER MODAL =====
+function openModal(name, price) {
+  document.getElementById('modalProductName').textContent = name;
+  document.getElementById('modalProductPrice').textContent = price;
+  document.getElementById('orderModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  ['orderName','orderPhone','orderCity','orderNP'].forEach(id => document.getElementById(id).value = '');
+  document.querySelectorAll('input[name="payment"]').forEach(r => r.checked = false);
+  document.getElementById('pay1').style.borderColor = '#E5E7EB';
+  document.getElementById('pay2').style.borderColor = '#E5E7EB';
+  document.getElementById('orderError').style.display = 'none';
+}
+
+function closeModal() {
+  document.getElementById('orderModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function closeSuccess() {
+  document.getElementById('successModal').style.display = 'none';
+  document.body.style.overflow = '';
+  cart = [];
+  updateCartBadge();
+}
+
+function selectPayment(type) {
+  document.getElementById('pay1').style.borderColor = type === 'prepay' ? '#6C2BD9' : '#E5E7EB';
+  document.getElementById('pay2').style.borderColor = type === 'cod' ? '#6C2BD9' : '#E5E7EB';
+}
+
+function submitOrder() {
+  const name = document.getElementById('orderName').value.trim();
+  const phone = document.getElementById('orderPhone').value.trim();
+  const city = document.getElementById('orderCity').value.trim();
+  const np = document.getElementById('orderNP').value.trim();
+  const payment = document.querySelector('input[name="payment"]:checked');
+  const err = document.getElementById('orderError');
+  if (!name || !phone || !city || !np || !payment) {
+    err.textContent = '⚠️ Будь ласка, заповніть всі поля та оберіть спосіб оплати.';
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  closeModal();
+  document.getElementById('successModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+document.getElementById('orderModal').addEventListener('click', function(e) { if (e.target===this) closeModal(); });
+document.getElementById('successModal').addEventListener('click', function(e) { if (e.target===this) closeSuccess(); });
+document.getElementById('cartModal').addEventListener('click', function(e) { if (e.target===this) closeCart(); });
 </script>
 </body>
 </html>
