@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Znaidi — Від пошуку до покупки за хвилину</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #6C2BD9;
+  --primary-light: #8B5CF6;
+  --primary-pale: #F3EEFF;
+  --accent: #F59E0B;
+  --accent-pale: #FFFBEB;
+  --green: #10B981;
+  --black: #0D0D1A;
+  --gray: #6B7280;
+  --light: #F9F7FF;
+  --white: #FFFFFF;
+  --border: #E5E7EB;
+  --gradient: linear-gradient(135deg, #6C2BD9 0%, #A855F7 50%, #EC4899 100%);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--white);color:var(--black);overflow-x:hidden;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:#f1f1f1;}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:10px;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(108,43,217,0.1);
+  height:72px;padding:0 5%;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:box-shadow .3s;
+}
+nav.scrolled{box-shadow:0 4px 30px rgba(108,43,217,0.1);}
+.nav-logo{
+  font-family:'Clash Display',sans-serif;
+  font-size:24px;font-weight:700;
+  text-decoration:none;color:var(--black);
+  display:flex;align-items:center;gap:10px;
+}
+.logo-mark{
+  width:40px;height:40px;
+  background:var(--gradient);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-mark svg{width:22px;height:22px;}
+.logo-dot{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-menu{display:flex;gap:28px;list-style:none;}
+.nav-menu a{
+  text-decoration:none;color:var(--gray);
+  font-size:14px;font-weight:600;
+  transition:color .2s;position:relative;
+}
+.nav-menu a::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;
+  height:2px;background:var(--gradient);
+  transform:scaleX(0);transition:transform .2s;border-radius:2px;
+}
+.nav-menu a:hover{color:var(--primary);}
+.nav-menu a:hover::after{transform:scaleX(1);}
+.nav-cta{
+  background:var(--gradient);color:white;
+  padding:11px 26px;border-radius:50px;
+  font-size:14px;font-weight:700;
+  text-decoration:none;transition:all .2s;
+  box-shadow:0 4px 15px rgba(108,43,217,0.3);
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(108,43,217,0.4);}
+
+/* ===== PAGE 1: HERO ===== */
+#hero{
+  min-height:100vh;
+  background:var(--light);
+  padding:100px 5% 60px;
+  display:flex;align-items:center;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 700px 500px at 80% 20%, rgba(108,43,217,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 400px at 10% 80%, rgba(236,72,153,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:40px;align-items:center;
+  width:100%;position:relative;z-index:1;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--primary-pale);color:var(--primary);
+  border-radius:50px;padding:6px 16px;
+  font-size:13px;font-weight:700;margin-bottom:24px;
+  border:1px solid rgba(108,43,217,0.15);
+}
+.live-dot{
+  width:8px;height:8px;background:var(--green);
+  border-radius:50%;animation:livepulse 1.5s infinite;
+}
+@keyframes livepulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,185,129,0.4)}50%{opacity:.8;box-shadow:0 0 0 6px rgba(16,185,129,0)}}
+h1{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(40px,5.5vw,70px);
+  font-weight:700;line-height:1.05;
+  letter-spacing:-2px;margin-bottom:10px;
+}
+.h1-grad{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{
+  font-size:clamp(16px,1.8vw,19px);
+  color:var(--gray);margin-bottom:36px;
+  line-height:1.65;font-weight:500;
+  max-width:480px;
+}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px;}
+.btn-grad{
+  background:var(--gradient);color:white;
+  padding:15px 34px;border-radius:50px;
+  font-weight:700;font-size:15px;
+  text-decoration:none;transition:all .25s;
+  box-shadow:0 6px 20px rgba(108,43,217,0.35);
+  display:inline-block;
+}
+.btn-grad:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(108,43,217,0.45);}
+.btn-outline{
+  border:2px solid var(--border);color:var(--black);
+  padding:15px 34px;border-radius:50px;
+  font-weight:600;font-size:15px;
+  text-decoration:none;transition:all .25s;display:inline-block;
+}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+.hero-trust{display:flex;gap:28px;align-items:center;}
+.trust-item{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--gray);font-weight:600;}
+.trust-icon{font-size:18px;}
+
+/* Hero right - product showcase */
+.hero-showcase{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:14px;position:relative;
+}
+.showcase-card{
+  background:white;border-radius:20px;
+  border:1px solid var(--border);
+  padding:20px;transition:all .3s;
+  animation:floatCard 4s ease-in-out infinite;
+}
+.showcase-card:nth-child(2){animation-delay:1s;margin-top:24px;}
+.showcase-card:nth-child(3){animation-delay:2s;}
+.showcase-card:nth-child(4){animation-delay:3s;margin-top:24px;}
+@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.showcase-card:hover{transform:translateY(-6px)!important;box-shadow:0 12px 40px rgba(108,43,217,0.12);}
+.sc-img{
+  height:90px;background:var(--primary-pale);
+  border-radius:12px;margin-bottom:12px;
+  display:flex;align-items:center;justify-content:center;
+}
+.sc-img svg{width:44px;height:44px;stroke:var(--primary);fill:none;stroke-width:1.5;stroke-linecap:round;}
+.sc-name{font-weight:700;font-size:13px;margin-bottom:4px;}
+.sc-price{font-family:'Clash Display',sans-serif;font-weight:700;color:var(--primary);font-size:15px;}
+.sc-badge{
+  display:inline-block;
+  background:var(--gradient);color:white;
+  font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:50px;margin-bottom:6px;
+}
+
+/* ===== PAGE 2: CATEGORIES ===== */
+#categories{padding:90px 5%;background:white;}
+.section-head{margin-bottom:52px;}
+.s-tag{
+  display:inline-block;
+  background:var(--primary-pale);color:var(--primary);
+  font-size:12px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;padding:5px 14px;border-radius:50px;
+  margin-bottom:16px;
+}
+h2{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(28px,4vw,46px);
+  font-weight:700;letter-spacing:-1.5px;
+  margin-bottom:14px;line-height:1.1;
+}
+.s-desc{font-size:16px;color:var(--gray);max-width:500px;line-height:1.7;}
+
+.cats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
+  gap:16px;
+}
+.cat-card{
+  background:var(--light);border-radius:20px;
+  padding:28px 20px;text-align:center;
+  border:2px solid transparent;cursor:pointer;
+  transition:all .25s;text-decoration:none;color:inherit;
+  display:block;position:relative;overflow:hidden;
+}
+.cat-card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--gradient);opacity:0;
+  transition:opacity .25s;border-radius:18px;
+}
+.cat-card:hover::before{opacity:1;}
+.cat-card:hover{transform:translateY(-5px);box-shadow:0 12px 35px rgba(108,43,217,0.2);}
+.cat-card:hover .cat-ico{background:rgba(255,255,255,0.2);}
+.cat-card:hover .cat-ico svg{stroke:white;}
+.cat-card:hover .cat-nm{color:white;}
+.cat-card:hover .cat-cnt{color:rgba(255,255,255,0.7);}
+.cat-ico{
+  width:58px;height:58px;border-radius:16px;
+  background:var(--primary-pale);
+  margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .25s;position:relative;z-index:1;
+}
+.cat-ico svg{width:28px;height:28px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .25s;}
+.cat-nm{font-weight:700;font-size:14px;margin-bottom:4px;transition:color .25s;position:relative;z-index:1;}
+.cat-cnt{font-size:12px;color:var(--gray);transition:color .25s;position:relative;z-index:1;}
+.cat-add{
+  background:white;border:2px dashed var(--border);
+  border-radius:20px;padding:28px 20px;
+  text-align:center;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  color:var(--gray);transition:all .25s;
+}
+.cat-add:hover{border-color:var(--primary);color:var(--primary);}
+.cat-add-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--light);display:flex;
+  align-items:center;justify-content:center;
+  font-size:22px;font-weight:300;transition:background .25s;
+}
+.cat-add:hover .cat-add-icon{background:var(--primary-pale);}
+.cat-add-lbl{font-size:13px;font-weight:700;}
+
+/* ===== PAGE 3: PRODUCTS ===== */
+#products{padding:90px 5%;background:var(--light);}
+.prods-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:20px;
+}
+.prod-card{
+  background:white;border-radius:20px;
+  border:1px solid var(--border);
+  overflow:hidden;transition:all .3s;
+}
+.prod-card:hover{transform:translateY(-6px);box-shadow:0 16px 50px rgba(108,43,217,0.12);}
+.prod-img{
+  height:170px;background:var(--primary-pale);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.prod-img svg{width:70px;height:70px;stroke:var(--primary);fill:none;stroke-width:1.5;stroke-linecap:round;}
+.prod-badge{
+  position:absolute;top:14px;left:14px;
+  background:var(--gradient);color:white;
+  font-size:11px;font-weight:700;
+  padding:4px 12px;border-radius:50px;
+}
+.prod-body{padding:18px;}
+.prod-name{font-weight:700;font-size:15px;margin-bottom:5px;}
+.prod-cat{font-size:12px;color:var(--gray);margin-bottom:14px;}
+.prod-foot{display:flex;align-items:center;justify-content:space-between;}
+.prod-price{
+  font-family:'Clash Display',sans-serif;
+  font-weight:700;font-size:18px;
+  background:var(--gradient);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.btn-cart{
+  background:var(--gradient);color:white;
+  border:none;padding:9px 20px;
+  border-radius:50px;font-size:13px;
+  font-weight:700;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  transition:all .2s;
+}
+.btn-cart:hover{transform:scale(1.05);}
+
+/* ===== PAGE 4: ABOUT ===== */
+#about{padding:90px 5%;background:white;}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;}
+.feats-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px;}
+.feat{
+  background:var(--light);border-radius:16px;
+  padding:22px;transition:all .25s;
+  border-bottom:3px solid transparent;
+}
+.feat:hover{border-bottom-color:var(--primary);transform:translateY(-2px);}
+.feat-emoji{font-size:26px;margin-bottom:10px;}
+.feat-title{font-weight:700;font-size:14px;margin-bottom:5px;}
+.feat-desc{font-size:13px;color:var(--gray);line-height:1.5;}
+.about-visual{
+  background:var(--light);border-radius:28px;
+  padding:44px 36px;position:relative;overflow:hidden;
+}
+.about-visual::before{
+  content:'';position:absolute;
+  top:-60px;right:-60px;
+  width:200px;height:200px;
+  background:var(--gradient);
+  border-radius:50%;opacity:.07;
+}
+.av-main{
+  font-family:'Clash Display',sans-serif;
+  font-size:90px;font-weight:700;
+  background:var(--gradient);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;margin-bottom:6px;
+}
+.av-label{font-size:16px;color:var(--gray);font-weight:600;}
+.av-divider{
+  width:56px;height:4px;
+  background:var(--gradient);
+  border-radius:2px;margin:22px 0;
+}
+.av-stats{display:flex;gap:28px;}
+.avs{text-align:left;}
+.avs-n{
+  font-family:'Clash Display',sans-serif;
+  font-size:28px;font-weight:700;color:var(--black);
+}
+.avs-l{font-size:12px;color:var(--gray);margin-top:2px;}
+
+/* ===== PAGE 5: DELIVERY ===== */
+#delivery{padding:90px 5%;background:var(--light);}
+.delivery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:18px;
+}
+.del-card{
+  background:white;border-radius:20px;
+  padding:30px 24px;
+  transition:all .25s;position:relative;overflow:hidden;
+}
+.del-card::after{
+  content:'';position:absolute;
+  left:0;top:0;bottom:0;width:4px;
+  background:var(--gradient);
+  border-radius:4px 0 0 4px;
+}
+.del-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(108,43,217,0.1);}
+.del-num{
+  font-family:'Clash Display',sans-serif;
+  font-size:44px;font-weight:700;
+  background:var(--gradient);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  opacity:.2;line-height:1;margin-bottom:12px;
+}
+.del-title{font-weight:700;font-size:17px;margin-bottom:8px;}
+.del-desc{font-size:14px;color:var(--gray);line-height:1.6;}
+
+/* ===== PAGE 6: CONTACTS ===== */
+#contacts{
+  padding:90px 5%;
+  background:var(--black);
+}
+#contacts h2{color:white;}
+#contacts .s-desc{color:#6B7280;}
+.contacts-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
+
+.contact-block{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;padding:32px;
+}
+.citem{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px;}
+.citem:last-child{margin-bottom:0;}
+.c-ico{
+  width:46px;height:46px;border-radius:12px;
+  background:rgba(108,43,217,0.2);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.c-ico svg{width:20px;height:20px;stroke:#A78BFA;fill:none;stroke-width:2;stroke-linecap:round;}
+.c-lbl{font-size:11px;color:#6B7280;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.c-val{color:white;font-weight:600;font-size:15px;}
+
+.soc-title{
+  font-family:'Clash Display',sans-serif;
+  font-size:20px;font-weight:700;color:white;
+  margin-bottom:20px;
+}
+.socs{display:flex;flex-direction:column;gap:10px;}
+.soc{
+  display:flex;align-items:center;gap:14px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;padding:14px 18px;
+  text-decoration:none;color:white;
+  transition:all .22s;
+}
+.soc:hover{background:rgba(108,43,217,0.2);border-color:rgba(108,43,217,0.5);transform:translateX(6px);}
+.sico{
+  width:40px;height:40px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sico svg{width:22px;height:22px;}
+.si-tg{background:#229ED9;}
+.si-vb{background:#7360F2;}
+.si-ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%);}
+.si-tt{background:#010101;border:1px solid #2a2a2a;}
+.soc-info{flex:1;}
+.sn{font-weight:700;font-size:14px;}
+.sh{font-size:12px;color:#6B7280;margin-top:1px;}
+.sarr{color:#374151;font-size:22px;transition:color .2s;}
+.soc:hover .sarr{color:#A78BFA;}
+
+/* FOOTER */
+footer{
+  background:#070711;
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding:28px 5%;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+.f-logo{
+  font-family:'Clash Display',sans-serif;
+  font-size:18px;font-weight:700;color:white;
+}
+.f-logo em{
+  background:var(--gradient);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-style:normal;
+}
+.f-copy{font-size:13px;color:#374151;}
+.f-nav{display:flex;gap:24px;}
+.f-nav a{color:#374151;font-size:13px;text-decoration:none;transition:color .2s;}
+.f-nav a:hover{color:#A78BFA;}
+
+/* HAMBURGER */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.hamburger span{width:24px;height:2px;background:var(--black);border-radius:2px;transition:all .3s;}
+
+@media(max-width:900px){
+  .nav-menu{display:none;}
+  .hamburger{display:flex;}
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-showcase{display:none;}
+  .about-grid{grid-template-columns:1fr;}
+  .contacts-grid{grid-template-columns:1fr;}
+  .hero-trust{flex-wrap:wrap;gap:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </div>
+    Znaidi<span class="logo-dot">.</span>
+  </a>
+  <ul class="nav-menu">
+    <li><a href="#categories">Категорії</a></li>
+    <li><a href="#products">Товари</a></li>
+    <li><a href="#about">Про нас</a></li>
+    <li><a href="#delivery">Доставка</a></li>
+    <li><a href="#contacts">Контакти</a></li>
+  </ul>
+  <a href="#contacts" class="nav-cta">Написати нам</a>
+</nav>
+
+<!-- ===== PAGE 1: HERO ===== -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow">
+        <span class="live-dot"></span>
+        Інтернет-магазин електроніки в Україні
+      </div>
+      <h1>
+        Знайди.<br>
+        <span class="h1-grad">Обери.</span><br>
+        Отримай.
+      </h1>
+      <p class="hero-sub">Від пошуку до покупки — за хвилину.<br>Гаджети, електроніка та техніка за найкращими цінами.</p>
+      <div class="hero-actions">
+        <a href="#categories" class="btn-grad">Переглянути каталог</a>
+        <a href="#about" class="btn-outline">Про магазин</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><span class="trust-icon">📦</span> Швидка доставка</div>
+        <div class="trust-item"><span class="trust-icon">✅</span> Гарантія якості</div>
+        <div class="trust-item"><span class="trust-icon">🔄</span> Повернення 14 днів</div>
+      </div>
+    </div>
+    <div class="hero-showcase">
+      <div class="showcase-card">
+        <div class="sc-img">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="1.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="sc-badge">Хіт</div>
+        <div class="sc-name">Павербанк 20000</div>
+        <div class="sc-price">₴1 490</div>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-img">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div class="sc-badge">Новинка</div>
+        <div class="sc-name">Реєстратор 4K</div>
+        <div class="sc-price">₴3 290</div>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-img">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="1.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </div>
+        <div class="sc-name">Чохол Premium</div>
+        <div class="sc-price">₴490</div>
+      </div>
+      <div class="showcase-card">
+        <div class="sc-img">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="sc-badge">-15%</div>
+        <div class="sc-name">Розумна лампа</div>
+        <div class="sc-price">₴890</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE 2: CATEGORIES ===== -->
+<section id="categories">
+  <div class="section-head">
+    <div class="s-tag">Каталог</div>
+    <h2>Категорії товарів</h2>
+    <p class="s-desc">Знайди потрібне або додай нові розділи разом з ростом бізнесу</p>
+  </div>
+  <div class="cats-grid">
+    <a href="#products" class="cat-card">
+      <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div>
+      <div class="cat-nm">Павербанки і Зарядні станції</div><div class="cat-cnt">40+ товарів</div>
+    </a>
+    <a href="#products" class="cat-card">
+      <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg></div>
+      <div class="cat-nm">Навушники</div><div class="cat-cnt">55+ товарів</div>
+    </a>
+    <a href="#products" class="cat-card">
+      <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+      <div class="cat-nm">Аксесуари</div><div class="cat-cnt">85+ товарів</div>
+    </a>
+    <a href="#products" class="cat-card">
+      <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+      <div class="cat-nm">Авто-гаджети</div><div class="cat-cnt">50+ товарів</div>
+    </a>
+    <a href="#products" class="cat-card">
+      <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="cat-nm">Розумний дім</div><div class="cat-cnt">40+ товарів</div>
+    </a>
+    <a href="#products" class="cat-card">
+      <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></div>
+      <div class="cat-nm">Бездротовий Зв'язок</div><div class="cat-cnt">35+ товарів</div>
+    </a>
+    <div class="cat-add">
+      <div class="cat-add-icon">+</div>
+      <div class="cat-add-lbl">Додати розділ</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE 3: PRODUCTS ===== -->
+<section id="products">
+  <div class="section-head">
+    <div class="s-tag">Асортимент</div>
+    <h2>Популярні товари</h2>
+    <p class="s-desc">Найкращі пропозиції за вигідними цінами — знайди своє за хвилину</p>
+  </div>
+  <div class="prods-grid">
+    <div class="prod-card">
+      <div class="prod-img">
+        <div class="prod-badge">Хіт продажів</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="1.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="prod-body">
+        <div class="prod-name">Павербанк 20000 mAh</div>
+        <div class="prod-cat">Електроніка</div>
+        <div class="prod-foot">
+          <div class="prod-price">₴1 490</div>
+          <button class="btn-cart">До кошика</button>
+        </div>
+      </div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-img">
+        <div class="prod-badge">Новинка</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div class="prod-body">
+        <div class="prod-name">Авто-реєстратор 4K</div>
+        <div class="prod-cat">Авто-гаджети</div>
+        <div class="prod-foot">
+          <div class="prod-price">₴3 290</div>
+          <button class="btn-cart">До кошика</button>
+        </div>
+      </div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-img">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="1.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      </div>
+      <div class="prod-body">
+        <div class="prod-name">Чохол Premium</div>
+        <div class="prod-cat">Аксесуари</div>
+        <div class="prod-foot">
+          <div class="prod-price">₴490</div>
+          <button class="btn-cart">До кошика</button>
+        </div>
+      </div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-img">
+        <div class="prod-badge">-15%</div>
+        <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div class="prod-body">
+        <div class="prod-name">Авто-реєстратор HD</div>
+        <div class="prod-cat">Авто-гаджети</div>
+        <div class="prod-foot">
+          <div class="prod-price">₴2 190</div>
+          <button class="btn-cart">До кошика</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE 4: ABOUT ===== -->
+<section id="about">
+  <div class="about-grid">
+    <div>
+      <div class="s-tag">Про нас</div>
+      <h2>Чому обирають Znaidi?</h2>
+      <p style="color:var(--gray);line-height:1.7;font-size:15px;max-width:460px;">Ми — сучасний магазин електроніки та гаджетів. Наша місія: щоб від пошуку потрібного товару до його покупки минала лише одна хвилина.</p>
+      <div class="feats-grid">
+        <div class="feat"><div class="feat-emoji">🚚</div><div class="feat-title">Швидка доставка</div><div class="feat-desc">Нова Пошта та Укрпошта по всій Україні</div></div>
+        <div class="feat"><div class="feat-emoji">✅</div><div class="feat-title">Гарантія якості</div><div class="feat-desc">Лише перевірені бренди та постачальники</div></div>
+        <div class="feat"><div class="feat-emoji">💳</div><div class="feat-title">Зручна оплата</div><div class="feat-desc">Карткою або накладеним платежем</div></div>
+        <div class="feat"><div class="feat-emoji">🔄</div><div class="feat-title">Повернення 14 днів</div><div class="feat-desc">Без зайвих питань і бюрократії</div></div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div class="av-main">500+</div>
+      <div class="av-label">товарів у каталозі</div>
+      <div class="av-divider"></div>
+      <div class="av-stats">
+        <div class="avs"><div class="avs-n">1000+</div><div class="avs-l">Клієнтів</div></div>
+        <div class="avs"><div class="avs-n">24/7</div><div class="avs-l">Підтримка</div></div>
+        <div class="avs"><div class="avs-n">2 дні</div><div class="avs-l">Доставка</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE 5: DELIVERY ===== -->
+<section id="delivery">
+  <div class="section-head">
+    <div class="s-tag">Доставка та оплата</div>
+    <h2>Як отримати замовлення</h2>
+    <p class="s-desc">Обирайте зручний спосіб доставки по всій Україні</p>
+  </div>
+  <div class="delivery-grid">
+    <div class="del-card"><div class="del-num">01</div><div class="del-title">Нова Пошта</div><div class="del-desc">Доставка у відділення або поштомат. 1–2 дні. Можна оплатити при отриманні.</div></div>
+    <div class="del-card"><div class="del-num">02</div><div class="del-title">Укрпошта</div><div class="del-desc">2–4 дні по всій Україні. Доступна у кожному місті та селі.</div></div>
+    <div class="del-card"><div class="del-num">03</div><div class="del-title">Самовивіз</div><div class="del-desc">Безкоштовно. Заберіть замовлення у зручний для вас час без очікування.</div></div>
+  </div>
+</section>
+
+<!-- ===== PAGE 6: CONTACTS ===== -->
+<section id="contacts">
+  <div class="section-head">
+    <div class="s-tag" style="background:rgba(108,43,217,0.2);color:#A78BFA;">Контакти</div>
+    <h2>Зв'яжіться з нами</h2>
+    <p class="s-desc">Ми завжди на зв'язку — оберіть зручний канал спілкування</p>
+  </div>
+  <div class="contacts-grid">
+    <div class="contact-block">
+      <div class="citem">
+        <div class="c-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.72A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.09a16 16 0 006 6l.56-.56a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+        <div><div class="c-lbl">Телефон</div><div class="c-val">+380 98 060 62 46</div></div>
+      </div>
+      <div class="citem">
+        <div class="c-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <div><div class="c-lbl">Email</div><div class="c-val">rozetkaivan54@gmail.com</div></div>
+      </div>
+      <div class="citem">
+        <div class="c-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div><div class="c-lbl">Місто</div><div class="c-val">Україна, м. Київ</div></div>
+      </div>
+      <div class="citem">
+        <div class="c-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div><div class="c-lbl">Режим роботи</div><div class="c-val">Пн–Нд: 10:00 — 19:00</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="soc-title">Ми у соцмережах</div>
+      <div class="socs">
+        <a href="https://t.me/+380980606246" class="soc" target="_blank">
+          <div class="sico si-tg">
+            <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.12.57-.47.71-.95.44l-2.62-1.93-1.27 1.22c-.14.14-.26.26-.53.26l.19-2.68 4.84-4.37c.21-.19-.05-.29-.32-.1L7.46 15.05l-2.57-.8c-.56-.17-.57-.56.12-.83l10.03-3.87c.47-.17.88.11.6.25z"/></svg>
+          </div>
+          <div class="soc-info"><div class="sn">Telegram</div><div class="sh">+380 98 060 62 46</div></div>
+          <div class="sarr">›</div>
+        </a>
+        <a href="viber://chat?number=380980606246" class="soc" target="_blank">
+          <div class="sico si-vb">
+            <svg viewBox="0 0 24 24" fill="white"><path d="M11.4 2C6.67 2 3.07 5.28 3.07 9.97c0 2.48 1.05 4.68 2.76 6.2V19l2.71-1.5c.72.2 1.49.31 2.28.31h.27c4.73 0 8.33-3.28 8.33-7.97S16.13 2 11.4 2zm.83 10.75c-.19.11-.46.11-.65 0l-2.84-1.64v-5.4h1.07v4.73l2.42 1.39v1zm2.44-1.25c-.3.7-.92 1.24-1.67 1.43-.75.19-1.53.04-2.17-.42l-2.7-1.56V6.97h.83v3.43l2.45 1.41c.49.28 1.05.36 1.59.22.54-.14.97-.52 1.19-1.03.42-.97.05-2.09-.86-2.62l-1.57-.91V6.65l1.57.91c1.42.82 2.0 2.57 1.34 3.94z"/></svg>
+          </div>
+          <div class="soc-info"><div class="sn">Viber</div><div class="sh">+380 98 060 62 46</div></div>
+          <div class="sarr">›</div>
+        </a>
+        <a href="https://instagram.com/znaidi.ua" class="soc" target="_blank">
+          <div class="sico si-ig">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg>
+          </div>
+          <div class="soc-info"><div class="sn">Instagram</div><div class="sh">@znaidi.ua</div></div>
+          <div class="sarr">›</div>
+        </a>
+        <a href="https://tiktok.com/@znaidi" class="soc" target="_blank">
+          <div class="sico si-tt">
+            <svg viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.01a8.16 8.16 0 004.77 1.52V7.1a4.85 4.85 0 01-1-.41z"/></svg>
+          </div>
+          <div class="soc-info"><div class="sn">TikTok</div><div class="sh">@znaidi</div></div>
+          <div class="sarr">›</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">Znaidi<em>.</em></div>
+  <div class="f-copy">© 2026 Znaidi. Всі права захищені.</div>
+  <div class="f-nav">
+    <a href="#categories">Категорії</a>
+    <a href="#products">Товари</a>
+    <a href="#delivery">Доставка</a>
+    <a href="#contacts">Контакти</a>
+  </div>
+</footer>
+
+<script>
+  // Nav shadow on scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+  });
+</script>
+</body>
+</html>
