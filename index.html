@@ -865,13 +865,37 @@ footer{
 
 <!-- SUCCESS MODAL -->
 <div id="successModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:white;border-radius:24px;padding:44px 36px;max-width:420px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.2);">
-    <div style="font-size:64px;margin-bottom:16px;">🎉</div>
-    <h3 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:12px;">Замовлення прийнято!</h3>
-    <p style="color:#6B7280;font-size:15px;line-height:1.6;margin-bottom:8px;">Дякуємо за покупку! Ми зв'яжемось з вами найближчим часом для підтвердження.</p>
-    <p style="color:#6B7280;font-size:14px;margin-bottom:28px;">📞 <strong>+380 98 060 62 46</strong></p>
-    <button onclick="closeSuccess()" style="background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:14px 36px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
-      Чудово!
+  <div style="background:white;border-radius:24px;padding:32px 28px;max-width:440px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:56px;margin-bottom:12px;">🎉</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;">Замовлення прийнято!</h3>
+      <p style="color:#6B7280;font-size:14px;">Дякуємо! Ми зв'яжемось з вами найближчим часом.</p>
+    </div>
+    <!-- Order summary -->
+    <div style="background:#F9F7FF;border-radius:16px;padding:18px;margin-bottom:16px;border:1px solid #EDE9FE;">
+      <div style="font-size:11px;font-weight:700;color:#6C2BD9;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📋 Деталі замовлення</div>
+      <div id="successItems" style="font-size:13px;color:#374151;line-height:1.8;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #EDE9FE;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:13px;color:#6B7280;font-weight:600;">Сума:</span>
+        <span id="successTotal" style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,#6C2BD9,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></span>
+      </div>
+    </div>
+    <!-- Delivery info -->
+    <div style="background:#F0FDF4;border-radius:16px;padding:18px;margin-bottom:16px;border:1px solid #BBF7D0;">
+      <div style="font-size:11px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📦 Дані доставки</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#374151;">
+        <div style="display:flex;gap:8px;"><span style="color:#6B7280;min-width:70px;">Отримувач:</span><span id="successName" style="font-weight:600;"></span></div>
+        <div style="display:flex;gap:8px;"><span style="color:#6B7280;min-width:70px;">Телефон:</span><span id="successPhone" style="font-weight:600;"></span></div>
+        <div style="display:flex;gap:8px;"><span style="color:#6B7280;min-width:70px;">Адреса:</span><span id="successCity" style="font-weight:600;"></span></div>
+        <div style="display:flex;gap:8px;"><span style="color:#6B7280;min-width:70px;">Оплата:</span><span id="successPayment" style="font-weight:600;"></span></div>
+      </div>
+      <div id="successCallback" style="margin-top:10px;font-size:13px;color:#16A34A;font-weight:600;"></div>
+    </div>
+    <div style="text-align:center;font-size:13px;color:#6B7280;margin-bottom:20px;">
+      📞 Телефон магазину: <a href="tel:+380979765639" style="color:#6C2BD9;font-weight:700;text-decoration:none;">+380 97 976 56 39</a>
+    </div>
+    <button onclick="closeSuccess()" style="width:100%;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:14px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
+      Чудово! 🎉
     </button>
   </div>
 </div>
@@ -959,217 +983,102 @@ function submitOrder() {
 </div>
 
 <!-- CART MODAL -->
-<div id="cartModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:white;border-radius:24px;padding:32px;max-width:500px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">
-    <button onclick="closeCart()" style="position:absolute;top:16px;right:16px;background:#f1f1f1;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;">✕</button>
-    <div style="font-size:12px;font-weight:700;letter-spacing:2px;color:#6C2BD9;text-transform:uppercase;margin-bottom:8px;">Кошик</div>
-    <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:24px;">Ваші товари</h3>
-    <div id="cartItems" style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;"></div>
-    <div id="cartEmpty" style="text-align:center;padding:32px;color:#9CA3AF;">
-      <div style="font-size:48px;margin-bottom:12px;">🛒</div>
-      <div style="font-weight:600;">Кошик порожній</div>
-      <div style="font-size:13px;margin-top:4px;">Додайте товари зі сторінки</div>
+<div id="cartModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:24px;width:100%;max-width:520px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;">
+    
+    <!-- Header -->
+    <div style="padding:24px 28px 16px;border-bottom:1px solid #F3F4F6;flex-shrink:0;">
+      <button onclick="closeCart()" style="position:absolute;top:16px;right:16px;background:#f1f1f1;border:none;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer;">✕</button>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#6C2BD9;text-transform:uppercase;margin-bottom:6px;">🛒 Кошик</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#0D0D1A;">Ваше замовлення</h3>
     </div>
-    <div id="cartFooter" style="display:none;border-top:2px solid #F3F4F6;padding-top:20px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <span style="font-weight:600;color:#6B7280;">Разом:</span>
+
+    <!-- Scrollable body -->
+    <div style="overflow-y:auto;flex:1;padding:20px 28px;">
+
+      <!-- Cart items -->
+      <div id="cartItems" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;"></div>
+      <div id="cartEmpty" style="text-align:center;padding:32px 0;color:#9CA3AF;">
+        <div style="font-size:44px;margin-bottom:10px;">🛒</div>
+        <div style="font-weight:600;font-size:15px;">Кошик порожній</div>
+        <div style="font-size:13px;margin-top:4px;">Додайте товари зі сторінки</div>
+      </div>
+
+      <!-- Order form -->
+      <div id="cartOrderForm" style="display:none;">
+        <div style="font-size:13px;font-weight:700;color:#6C2BD9;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;">📦 Куди відправити</div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <!-- Name -->
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px;">👤 Ім'я та прізвище *</label>
+            <input id="cName" type="text" placeholder="Іван Іваненко" style="width:100%;padding:11px 14px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+          </div>
+          <!-- Phone -->
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px;">📱 Номер телефону *</label>
+            <input id="cPhone" type="tel" placeholder="+38 (097) 976-56-39" style="width:100%;padding:11px 14px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+          </div>
+          <!-- City -->
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px;">🏙️ Місто *</label>
+            <input id="cCity" type="text" placeholder="Київ" style="width:100%;padding:11px 14px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+          </div>
+          <!-- Nova Poshta -->
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px;">📦 Відділення Нової Пошти *</label>
+            <input id="cNP" type="text" placeholder="Відділення №1 або поштомат" style="width:100%;padding:11px 14px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+          </div>
+
+          <!-- Callback checkbox -->
+          <label id="callbackBox" style="display:flex;align-items:flex-start;gap:12px;background:#F9F7FF;border-radius:12px;padding:14px;cursor:pointer;border:2px solid #EDE9FE;transition:border .2s;" onmouseover="this.style.borderColor='#6C2BD9'" onmouseout="this.style.borderColor='#EDE9FE'">
+            <input id="cCallback" type="checkbox" style="width:18px;height:18px;accent-color:#6C2BD9;margin-top:1px;flex-shrink:0;cursor:pointer;"/>
+            <div>
+              <div style="font-weight:700;font-size:14px;color:#0D0D1A;">📞 Передзвоніть мені</div>
+              <div style="font-size:12px;color:#6B7280;margin-top:2px;">Менеджер передзвонить на вказаний номер для підтвердження замовлення</div>
+            </div>
+          </label>
+
+          <!-- Payment -->
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">💳 Спосіб оплати *</label>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:2px solid #E5E7EB;border-radius:12px;cursor:pointer;transition:border .2s;" id="cpay1" onclick="selectCartPayment('prepay')">
+                <input type="radio" name="cartPayment" value="prepay" style="margin-top:2px;accent-color:#6C2BD9;"/>
+                <div><div style="font-weight:700;font-size:14px;">💸 Передплата</div><div style="font-size:12px;color:#6B7280;margin-top:1px;">Оплата на картку — відправляємо того ж дня</div></div>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:2px solid #E5E7EB;border-radius:12px;cursor:pointer;transition:border .2s;" id="cpay2" onclick="selectCartPayment('cod')">
+                <input type="radio" name="cartPayment" value="cod" style="margin-top:2px;accent-color:#6C2BD9;"/>
+                <div><div style="font-weight:700;font-size:14px;">📬 Накладений платіж</div><div style="font-size:12px;color:#6B7280;margin-top:1px;">Оплата при отриманні (+20 грн комісія НП)</div></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div id="cartFormError" style="display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px;font-size:13px;color:#DC2626;margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="cartFooter" style="display:none;padding:16px 28px 24px;border-top:1px solid #F3F4F6;flex-shrink:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <span style="font-weight:600;color:#6B7280;font-size:14px;">Загальна сума:</span>
         <span id="cartTotal" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></span>
       </div>
-      <button onclick="proceedToOrder()" style="width:100%;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:16px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 6px 20px rgba(108,43,217,0.35);">
-        ✅ Оформити замовлення
+      <button id="cartMainBtn" onclick="cartNextStep()" style="width:100%;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:15px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 6px 20px rgba(108,43,217,0.35);transition:all .2s;">
+        📦 Оформити замовлення
       </button>
     </div>
-    <!-- Contacts in cart -->
-    <div style="margin-top:24px;padding-top:20px;border-top:2px solid #F3F4F6;">
-      <div style="font-size:12px;font-weight:700;color:#6B7280;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Зв'язатись з нами</div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <a href="tel:+380980606246" style="display:flex;align-items:center;gap:12px;background:#F9F7FF;border-radius:12px;padding:12px 14px;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='#EDE9FE'" onmouseout="this.style.background='#F9F7FF'">
-          <div style="width:36px;height:36px;background:#6C2BD9;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.72A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.09a16 16 0 006 6l.56-.56a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-          </div>
-          <div>
-            <div style="font-weight:700;font-size:13px;color:#0D0D1A;">Телефон</div>
-            <div style="font-size:12px;color:#6B7280;">+380 98 060 62 46</div>
-          </div>
-        </a>
-        <a href="https://t.me/+380980606246" target="_blank" style="display:flex;align-items:center;gap:12px;background:#E8F5FF;border-radius:12px;padding:12px 14px;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='#D0EBFF'" onmouseout="this.style.background='#E8F5FF'">
-          <div style="width:36px;height:36px;background:#229ED9;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.12.57-.47.71-.95.44l-2.62-1.93-1.27 1.22c-.14.14-.26.26-.53.26l.19-2.68 4.84-4.37c.21-.19-.05-.29-.32-.1L7.46 15.05l-2.57-.8c-.56-.17-.57-.56.12-.83l10.03-3.87c.47-.17.88.11.6.25z"/></svg>
-          </div>
-          <div>
-            <div style="font-weight:700;font-size:13px;color:#0D0D1A;">Telegram</div>
-            <div style="font-size:12px;color:#6B7280;">Написати в Telegram</div>
-          </div>
-        </a>
-        <a href="viber://chat?number=380980606246" target="_blank" style="display:flex;align-items:center;gap:12px;background:#F3F0FF;border-radius:12px;padding:12px 14px;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='#EAE5FF'" onmouseout="this.style.background='#F3F0FF'">
-          <div style="width:36px;height:36px;background:#7360F2;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M11.4 2C6.67 2 3.07 5.28 3.07 9.97c0 2.48 1.05 4.68 2.76 6.2V19l2.71-1.5c.72.2 1.49.31 2.28.31h.27c4.73 0 8.33-3.28 8.33-7.97S16.13 2 11.4 2z"/></svg>
-          </div>
-          <div>
-            <div style="font-weight:700;font-size:13px;color:#0D0D1A;">Viber</div>
-            <div style="font-size:12px;color:#6B7280;">Написати у Viber</div>
-          </div>
-        </a>
-      </div>
-    </div>
   </div>
-</div>
-
-<script>
-// Nav scroll
-window.addEventListener('scroll', () => {
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
-});
-
-// ===== DRAGGABLE CHAT =====
-let chatDragging = false, chatDragOffsetX = 0, chatDragOffsetY = 0, chatMoved = false;
-const chatBtn = document.getElementById('chatBtn');
-
-chatBtn.addEventListener('mousedown', function(e) {
-  chatDragging = true; chatMoved = false;
-  chatDragOffsetX = e.clientX - chatBtn.getBoundingClientRect().left;
-  chatDragOffsetY = e.clientY - chatBtn.getBoundingClientRect().top;
-  chatBtn.style.cursor = 'grabbing';
-  e.preventDefault();
-});
-document.addEventListener('mousemove', function(e) {
-  if (!chatDragging) return;
-  chatMoved = true;
-  let x = Math.max(0, Math.min(window.innerWidth - chatBtn.offsetWidth, e.clientX - chatDragOffsetX));
-  let y = Math.max(0, Math.min(window.innerHeight - chatBtn.offsetHeight, e.clientY - chatDragOffsetY));
-  chatBtn.style.left = x+'px'; chatBtn.style.top = y+'px';
-  chatBtn.style.right = 'auto'; chatBtn.style.bottom = 'auto';
-});
-document.addEventListener('mouseup', function() {
-  if (chatDragging) { chatDragging = false; chatBtn.style.cursor = 'grab'; }
-});
-chatBtn.addEventListener('touchstart', function(e) {
-  const t = e.touches[0]; chatDragging = true; chatMoved = false;
-  chatDragOffsetX = t.clientX - chatBtn.getBoundingClientRect().left;
-  chatDragOffsetY = t.clientY - chatBtn.getBoundingClientRect().top;
-}, {passive:true});
-document.addEventListener('touchmove', function(e) {
-  if (!chatDragging) return;
-  chatMoved = true;
-  const t = e.touches[0];
-  let x = Math.max(0, Math.min(window.innerWidth - chatBtn.offsetWidth, t.clientX - chatDragOffsetX));
-  let y = Math.max(0, Math.min(window.innerHeight - chatBtn.offsetHeight, t.clientY - chatDragOffsetY));
-  chatBtn.style.left = x+'px'; chatBtn.style.top = y+'px';
-  chatBtn.style.right = 'auto'; chatBtn.style.bottom = 'auto';
-}, {passive:true});
-document.addEventListener('touchend', function() { chatDragging = false; });
-
-function toggleChat(e) {
-  if (chatMoved) { chatMoved = false; return; }
-  const popup = document.getElementById('chatPopup');
-  const btn = document.getElementById('chatBtn');
-  const isOpen = popup.style.display !== 'none';
-  if (isOpen) {
-    popup.style.display = 'none';
-  } else {
-    popup.style.display = 'block';
-    const r = btn.getBoundingClientRect();
-    const popupH = 450;
-    let top = r.top - popupH - 10;
-    if (top < 10) top = r.bottom + 10;
-    popup.style.left = Math.max(10, Math.min(window.innerWidth - 330, r.left)) + 'px';
-    popup.style.top = top + 'px';
-    popup.style.right = 'auto';
-    popup.style.bottom = 'auto';
-  }
-}
-
-// ===== BOT KNOWLEDGE =====
-const botKnowledge = {
-  catalog: {
-    keys: ['товар','каталог','асортимент','що є','що продає','категор','продукт'],
-    answer: '🛍 <b>Наш каталог:</b><br><br>• ⚡ Павербанки і Зарядні станції<br>• 🎧 Навушники<br>• 🚗 Авто-гаджети<br>• 💜 Аксесуари<br>• 📡 Бездротовий зв'язок<br>• 🏠 Розумний дім<br><br>Хіт продажів: <b>Павербанк Hoco J136B 30000mAh — ₴985</b>'
-  },
-  price: {
-    keys: ['ціна','скільки','вартість','прайс','грн','коштує'],
-    answer: '💰 <b>Актуальні ціни:</b><br><br>• Павербанк Hoco J136B 30000mAh — <b>₴985</b><br>• Чохол Premium — <b>₴490</b><br>• Навушники — уточнюйте у менеджера<br>• Веб-камера — уточнюйте у менеджера<br><br>📞 Дзвоніть: <b>+380 97 976 56 39</b>'
-  },
-  delivery: {
-    keys: ['доставк','нова пошта','укрпошта','оплат','накладен','передплат','днів','коли','відправ'],
-    answer: '🚚 <b>Доставка:</b><br><br>• 📦 Нова Пошта — 1-2 дні<br>• 📮 Укрпошта — 2-4 дні<br><br>💳 <b>Оплата:</b><br>• Передплата на картку<br>• Накладений платіж (+20 грн НП)<br><br>⏰ Відправляємо того ж дня до 17:00'
-  },
-  contacts: {
-    keys: ['контакт','телефон','номер','звяз','написат','telegram','viber','вайбер','пошта','email'],
-    answer: '📞 <b>Контакти:</b><br><br>• 📱 Телефон: <b>+380 97 976 56 39</b><br>• 💬 Telegram: +380 97 976 56 39<br>• 💜 Viber: +380 97 976 56 39<br>• 📧 rozetkaivan54@gmail.com<br><br>⏰ Пн-Нд: 10:00–19:00'
-  },
-  guarantee: {
-    keys: ['гарантія','поверн','якість','брак','обмін','зламал'],
-    answer: '✅ <b>Гарантія та повернення:</b><br><br>• 🔄 Повернення — <b>14 днів</b><br>• ✅ Гарантія якості на всі товари<br>• 📦 Обмін без зайвих питань<br><br>Є проблема? Дзвоніть: <b>+380 97 976 56 39</b>'
-  },
-  order: {
-    keys: ['замовлен','купити','купи','оформ','хочу','як замовити'],
-    answer: '✅ <b>Як зробити замовлення:</b><br><br>1️⃣ Знайдіть товар у каталозі<br>2️⃣ Натисніть <b>«До кошика»</b><br>3️⃣ Відкрийте кошик 🛒 вгорі<br>4️⃣ Натисніть <b>«Оформити замовлення»</b><br>5️⃣ Заповніть форму<br><br>Або телефонуйте: <b>+380 97 976 56 39</b>'
-  }
-};
-
-function addBotMsg(text, isUser=false) {
-  const c = document.getElementById('botMessages');
-  const d = document.createElement('div');
-  if (isUser) {
-    d.style.cssText = 'background:linear-gradient(135deg,#6C2BD9,#A855F7);border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:13px;color:white;max-width:85%;align-self:flex-end;margin-left:auto;word-break:break-word;';
-    d.textContent = text;
-  } else {
-    d.style.cssText = 'background:white;border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:13px;color:#374151;line-height:1.6;max-width:92%;box-shadow:0 2px 8px rgba(0,0,0,0.06);';
-    d.innerHTML = text;
-  }
-  c.appendChild(d);
-  c.scrollTop = c.scrollHeight;
-}
-
-function addTyping() {
-  const c = document.getElementById('botMessages');
-  const d = document.createElement('div');
-  d.id = 'botTyping';
-  d.style.cssText = 'background:white;border-radius:14px 14px 14px 4px;padding:12px 16px;font-size:18px;color:#9CA3AF;max-width:80%;box-shadow:0 2px 8px rgba(0,0,0,0.06);letter-spacing:2px;';
-  d.innerHTML = '●●●';
-  d.animate([{opacity:.3},{opacity:1},{opacity:.3}],{duration:1000,iterations:Infinity});
-  c.appendChild(d);
-  c.scrollTop = c.scrollHeight;
-}
-function removeTyping() { const t=document.getElementById('botTyping'); if(t)t.remove(); }
-
-function botAnswer(key) {
-  const data = botKnowledge[key];
-  if (!data) return;
-  addTyping();
-  setTimeout(() => { removeTyping(); addBotMsg(data.answer); }, 700);
-}
-
-function sendBotMsg() {
-  const input = document.getElementById('botInput');
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = '';
-  addBotMsg(text, true);
-  addTyping();
-  setTimeout(() => {
-    removeTyping();
-    const lower = text.toLowerCase();
-    let found = false;
-    for (const [key, data] of Object.entries(botKnowledge)) {
-      if (data.keys.some(k => lower.includes(k))) {
-        addBotMsg(data.answer);
-        found = true; break;
-      }
-    }
-    if (!found) {
-      addBotMsg('Вибачте, не зрозумів 😔<br><br>Залиште заявку і ми передзвонимо:<br><br><button onclick="toggleChat(event);openCart()" style="background:linear-gradient(135deg,#6C2BD9,#A855F7);border:none;color:white;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">📝 Залишити заявку</button><br><br>або дзвоніть: <b>+380 97 976 56 39</b>');
-    }
-  }, 900);
-}
-
-// ===== CART =====
+</div>// ===== CART =====
 let cart = [];
+let cartStep = 1; // 1=items, 2=form
 
 function addToCart(name, price, priceNum) {
   const existing = cart.find(i => i.name === name);
   if (existing) { existing.qty++; }
   else { cart.push({name, price, priceNum, qty:1}); }
+  cartStep = 1;
   updateCartBadge();
   renderCart();
   openCart();
@@ -1187,29 +1096,47 @@ function renderCart() {
   const empty = document.getElementById('cartEmpty');
   const footer = document.getElementById('cartFooter');
   const totalEl = document.getElementById('cartTotal');
+  const form = document.getElementById('cartOrderForm');
+  const btn = document.getElementById('cartMainBtn');
+
   if (cart.length === 0) {
     if(container) container.innerHTML = '';
     if(empty) empty.style.display = 'block';
     if(footer) footer.style.display = 'none';
+    if(form) form.style.display = 'none';
+    cartStep = 1;
     return;
   }
+
   if(empty) empty.style.display = 'none';
   if(footer) footer.style.display = 'block';
-  if(container) container.innerHTML = cart.map((item,idx) => `
-    <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#F9F7FF;border-radius:14px;border:1px solid #EDE9FE;">
-      <div style="flex:1;">
-        <div style="font-weight:700;font-size:14px;margin-bottom:3px;">${item.name}</div>
-        <div style="font-size:13px;color:#6C2BD9;font-weight:700;">${item.price}</div>
+
+  if (cartStep === 1) {
+    if(form) form.style.display = 'none';
+    if(container) container.style.display = 'flex';
+    if(btn) btn.innerHTML = '📦 Оформити замовлення';
+    if(container) container.innerHTML = cart.map((item,idx) => `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#F9F7FF;border-radius:14px;border:1px solid #EDE9FE;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:14px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+          <div style="font-size:13px;color:#6C2BD9;font-weight:700;">${item.price}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+          <button onclick="changeQty(${idx},-1)" style="width:28px;height:28px;border-radius:8px;border:2px solid #E5E7EB;background:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">−</button>
+          <span style="font-weight:700;font-size:15px;min-width:22px;text-align:center;">${item.qty}</span>
+          <button onclick="changeQty(${idx},1)" style="width:28px;height:28px;border-radius:8px;border:none;background:#6C2BD9;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">+</button>
+        </div>
+        <button onclick="removeFromCart(${idx})" style="background:#FEE2E2;border:none;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:13px;flex-shrink:0;">🗑</button>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <button onclick="changeQty(${idx},-1)" style="width:28px;height:28px;border-radius:8px;border:2px solid #E5E7EB;background:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
-        <span style="font-weight:700;font-size:15px;min-width:20px;text-align:center;">${item.qty}</span>
-        <button onclick="changeQty(${idx},1)" style="width:28px;height:28px;border-radius:8px;border:none;background:#6C2BD9;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
-      </div>
-      <button onclick="removeFromCart(${idx})" style="background:#FEE2E2;border:none;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;">🗑</button>
-    </div>
-  `).join('');
-  if(totalEl) totalEl.textContent = '₴' + cart.reduce((s,i) => s+i.priceNum*i.qty, 0).toLocaleString('uk-UA');
+    `).join('');
+  } else {
+    if(container) container.style.display = 'none';
+    if(form) form.style.display = 'block';
+    if(btn) btn.innerHTML = '✅ Підтвердити замовлення';
+  }
+
+  const total = cart.reduce((s,i) => s+i.priceNum*i.qty, 0);
+  if(totalEl) totalEl.textContent = '₴' + total.toLocaleString('uk-UA');
 }
 
 function changeQty(idx, delta) {
@@ -1228,81 +1155,54 @@ function closeCart() {
   document.getElementById('cartModal').style.display = 'none';
   document.body.style.overflow = '';
 }
-function proceedToOrder() {
-  closeCart();
-  const names = cart.map(i => `${i.name} ×${i.qty}`).join(', ');
-  const total = cart.reduce((s,i) => s+i.priceNum*i.qty, 0);
-  openModal(names, '₴'+total.toLocaleString('uk-UA'));
+
+function cartNextStep() {
+  if (cartStep === 1) {
+    cartStep = 2;
+    renderCart();
+  } else {
+    submitCartOrder();
+  }
 }
 
-// ===== ORDER MODAL =====
-function openModal(name, price) {
-  document.getElementById('modalProductName').textContent = name;
-  document.getElementById('modalProductPrice').textContent = price;
-  document.getElementById('orderModal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-  ['orderName','orderPhone','orderCity','orderNP'].forEach(id => document.getElementById(id).value = '');
-  document.querySelectorAll('input[name="payment"]').forEach(r => r.checked = false);
-  document.getElementById('pay1').style.borderColor = '#E5E7EB';
-  document.getElementById('pay2').style.borderColor = '#E5E7EB';
-  document.getElementById('orderError').style.display = 'none';
+function selectCartPayment(type) {
+  document.getElementById('cpay1').style.borderColor = type==='prepay' ? '#6C2BD9' : '#E5E7EB';
+  document.getElementById('cpay2').style.borderColor = type==='cod' ? '#6C2BD9' : '#E5E7EB';
 }
-function closeModal() {
-  document.getElementById('orderModal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-function closeSuccess() {
-  document.getElementById('successModal').style.display = 'none';
-  document.body.style.overflow = '';
-  cart = []; updateCartBadge();
-}
-function selectPayment(type) {
-  document.getElementById('pay1').style.borderColor = type==='prepay' ? '#6C2BD9' : '#E5E7EB';
-  document.getElementById('pay2').style.borderColor = type==='cod' ? '#6C2BD9' : '#E5E7EB';
-}
-function submitOrder() {
-  const name = document.getElementById('orderName').value.trim();
-  const phone = document.getElementById('orderPhone').value.trim();
-  const city = document.getElementById('orderCity').value.trim();
-  const np = document.getElementById('orderNP').value.trim();
-  const payment = document.querySelector('input[name="payment"]:checked');
-  const err = document.getElementById('orderError');
+
+function submitCartOrder() {
+  const name = document.getElementById('cName').value.trim();
+  const phone = document.getElementById('cPhone').value.trim();
+  const city = document.getElementById('cCity').value.trim();
+  const np = document.getElementById('cNP').value.trim();
+  const payment = document.querySelector('input[name="cartPayment"]:checked');
+  const callback = document.getElementById('cCallback').checked;
+  const err = document.getElementById('cartFormError');
+
   if (!name||!phone||!city||!np||!payment) {
     err.textContent = '⚠️ Заповніть всі поля та оберіть спосіб оплати.';
     err.style.display = 'block'; return;
   }
   err.style.display = 'none';
-  closeModal();
+
+  // Build success message
+  const items = cart.map(i=>`${i.name} ×${i.qty} — ${i.price}`).join('<br>');
+  const total = cart.reduce((s,i)=>s+i.priceNum*i.qty,0);
+  const payLabel = payment.value==='prepay' ? 'Передплата' : 'Накладений платіж';
+  const cbMsg = callback ? '<br>📞 <b>Клієнт просить передзвонити</b> для підтвердження' : '';
+
+  document.getElementById('successItems').innerHTML = items;
+  document.getElementById('successTotal').textContent = '₴' + total.toLocaleString('uk-UA');
+  document.getElementById('successName').textContent = name;
+  document.getElementById('successPhone').textContent = phone;
+  document.getElementById('successCity').textContent = city + ', ' + np;
+  document.getElementById('successPayment').textContent = payLabel;
+  document.getElementById('successCallback').innerHTML = cbMsg;
+
+  closeCart();
   document.getElementById('successModal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  cart = []; cartStep = 1; updateCartBadge();
 }
 
-// ===== SEARCH =====
-const allProducts = [
-  {name:'Павербанк Hoco J136B Sirui 30000mAh', price:'₴985', priceNum:985, cat:'Павербанки і Зарядні станції'},
-  {name:'Навушники', price:'₴3 290', priceNum:3290, cat:'Навушники'},
-  {name:'Чохол Premium', price:'₴490', priceNum:490, cat:'Аксесуари'},
-  {name:'Веб-камера', price:'₴2 190', priceNum:2190, cat:'Електроніка'},
-];
-function searchProducts(query) {
-  const box = document.getElementById('searchResults');
-  if (!query.trim()) { box.innerHTML=''; box.style.display='none'; return; }
-  const q = query.toLowerCase();
-  const found = allProducts.filter(p => p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q));
-  box.style.display = 'block';
-  if (!found.length) { box.innerHTML='<div style="padding:16px;text-align:center;color:#9CA3AF;font-size:13px;">😕 Нічого не знайдено</div>'; return; }
-  box.innerHTML = found.map(p => `
-    <div onclick="addToCart('${p.name}','${p.price}',${p.priceNum})" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;border-bottom:1px solid #F3F4F6;" onmouseover="this.style.background='#F9F7FF'" onmouseout="this.style.background='white'">
-      <div><div style="font-weight:700;font-size:13px;">${p.name}</div><div style="font-size:11px;color:#9CA3AF;margin-top:2px;">${p.cat}</div></div>
-      <div style="font-weight:800;font-size:14px;color:#6C2BD9;">${p.price}</div>
-    </div>
-  `).join('');
-}
-
-// Close modals on backdrop
-document.getElementById('orderModal').addEventListener('click', function(e){if(e.target===this)closeModal();});
-document.getElementById('successModal').addEventListener('click', function(e){if(e.target===this)closeSuccess();});
-document.getElementById('cartModal').addEventListener('click', function(e){if(e.target===this)closeCart();});
-</script>
-</body>
-</html>
+// ===== ORDER MODAL =====
