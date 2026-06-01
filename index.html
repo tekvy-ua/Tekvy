@@ -628,7 +628,14 @@ footer{
         </div>
         <div class="prod-foot">
           <div class="prod-price">₴985</div>
-          <button class="btn-cart" onclick="addToCart('Павербанк Hoco J136B Sirui 30000mAh', '₴985', 985)">До кошика</button>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:4px;background:#F3F0FF;border-radius:8px;padding:4px;">
+              <button onclick="event.stopPropagation();changeProductQty('pbank',-1)" id="pbank-minus" style="width:26px;height:26px;border:none;background:white;border-radius:6px;font-size:15px;cursor:pointer;font-weight:700;color:#6C2BD9;">−</button>
+              <span id="pbank-qty" style="font-weight:700;font-size:14px;color:#6C2BD9;min-width:20px;text-align:center;">1</span>
+              <button onclick="event.stopPropagation();changeProductQty('pbank',1)" id="pbank-plus" style="width:26px;height:26px;border:none;background:#6C2BD9;border-radius:6px;font-size:15px;cursor:pointer;font-weight:700;color:white;">+</button>
+            </div>
+            <button class="btn-cart" onclick="addToCartQty('Павербанк Hoco J136B Sirui 30000mAh','₴985',985,'pbank')">До кошика</button>
+          </div>
         </div>
       </div>
     </div>
@@ -642,7 +649,14 @@ footer{
         <div class="prod-cat">Авто-гаджети</div>
         <div class="prod-foot">
           <div class="prod-price">₴3 290</div>
-          <button class="btn-cart" onclick="addToCart('Навушники', '₴3 290', 3290)">До кошика</button>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:4px;background:#F3F0FF;border-radius:8px;padding:4px;">
+              <button onclick="event.stopPropagation();changeProductQty('nav',-1)" style="width:26px;height:26px;border:none;background:white;border-radius:6px;font-size:15px;cursor:pointer;font-weight:700;color:#6C2BD9;">−</button>
+              <span id="nav-qty" style="font-weight:700;font-size:14px;color:#6C2BD9;min-width:20px;text-align:center;">1</span>
+              <button onclick="event.stopPropagation();changeProductQty('nav',1)" style="width:26px;height:26px;border:none;background:#6C2BD9;border-radius:6px;font-size:15px;cursor:pointer;font-weight:700;color:white;">+</button>
+            </div>
+            <button class="btn-cart" onclick="addToCartQty('Навушники','₴3 290',3290,'nav')">До кошика</button>
+          </div>
         </div>
       </div>
     </div>
@@ -655,7 +669,14 @@ footer{
         <div class="prod-cat">Аксесуари</div>
         <div class="prod-foot">
           <div class="prod-price">₴490</div>
-          <button class="btn-cart" onclick="addToCart('Чохол Premium', '₴490', 490)">До кошика</button>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:4px;background:#F3F0FF;border-radius:8px;padding:4px;">
+              <button onclick="event.stopPropagation();changeProductQty('choh',-1)" style="width:26px;height:26px;border:none;background:white;border-radius:6px;font-size:15px;cursor:pointer;font-weight:700;color:#6C2BD9;">−</button>
+              <span id="choh-qty" style="font-weight:700;font-size:14px;color:#6C2BD9;min-width:20px;text-align:center;">1</span>
+              <button onclick="event.stopPropagation();changeProductQty('choh',1)" style="width:26px;height:26px;border:none;background:#6C2BD9;border-radius:6px;font-size:15px;cursor:pointer;font-weight:700;color:white;">+</button>
+            </div>
+            <button class="btn-cart" onclick="addToCartQty('Чохол Premium','₴490',490,'choh')">До кошика</button>
+          </div>
         </div>
       </div>
     </div>
@@ -669,7 +690,14 @@ footer{
         <div class="prod-cat">Авто-гаджети</div>
         <div class="prod-foot">
           <div class="prod-price">₴2 190</div>
-          <button class="btn-cart" onclick="addToCart('Веб-камера', '₴2 190', 2190)">До кошика</button>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:4px;background:#F3F0FF;border-radius:8px;padding:4px;">
+              <button onclick="event.stopPropagation();changeProductQty('veb',-1)" style="width:26px;height:26px;border:none;background:white;border-radius:6px;font-size:15px;cursor:pointer;font-weight:700;color:#6C2BD9;">−</button>
+              <span id="veb-qty" style="font-weight:700;font-size:14px;color:#6C2BD9;min-width:20px;text-align:center;">1</span>
+              <button onclick="event.stopPropagation();changeProductQty('veb',1)" style="width:26px;height:26px;border:none;background:#6C2BD9;border-radius:6px;font-size:15px;cursor:pointer;font-weight:700;color:white;">+</button>
+            </div>
+            <button class="btn-cart" onclick="addToCartQty('Веб-камера','₴2 190',2190,'veb')">До кошика</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1073,6 +1101,28 @@ function submitOrder() {
 </div>// ===== CART =====
 let cart = [];
 let cartStep = 1; // 1=items, 2=form
+
+function changeProductQty(pid, delta) {
+  const el = document.getElementById(pid + '-qty');
+  if (!el) return;
+  let val = parseInt(el.textContent) + delta;
+  if (val < 1) val = 1;
+  if (val > 99) val = 99;
+  el.textContent = val;
+}
+
+function addToCartQty(name, price, priceNum, pid) {
+  const el = document.getElementById(pid + '-qty');
+  const qty = el ? parseInt(el.textContent) : 1;
+  const existing = cart.find(i => i.name === name);
+  if (existing) { existing.qty += qty; }
+  else { cart.push({name, price, priceNum, qty}); }
+  if (el) el.textContent = '1';
+  cartStep = 1;
+  updateCartBadge();
+  renderCart();
+  openCart();
+}
 
 function addToCart(name, price, priceNum) {
   const existing = cart.find(i => i.name === name);
