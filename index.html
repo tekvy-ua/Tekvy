@@ -570,27 +570,27 @@ footer{
     <p class="s-desc">Знайди потрібне або додай нові розділи разом з ростом бізнесу</p>
   </div>
   <div class="cats-grid">
-    <a href="#products" class="cat-card">
+    <a href="#" onclick="showCategory('powerbanks');return false;" class="cat-card">
       <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg></div>
       <div class="cat-nm">Павербанки і Зарядні станції</div><div class="cat-cnt">40+ товарів</div>
     </a>
-    <a href="#products" class="cat-card">
+    <a href="#" onclick="showCategory('headphones');return false;" class="cat-card">
       <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg></div>
       <div class="cat-nm">Навушники</div><div class="cat-cnt">55+ товарів</div>
     </a>
-    <a href="#products" class="cat-card">
+    <a href="#" onclick="showCategory('accessories');return false;" class="cat-card">
       <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
       <div class="cat-nm">Аксесуари</div><div class="cat-cnt">85+ товарів</div>
     </a>
-    <a href="#products" class="cat-card">
+    <a href="#" onclick="showCategory('auto');return false;" class="cat-card">
       <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
       <div class="cat-nm">Авто-гаджети</div><div class="cat-cnt">50+ товарів</div>
     </a>
-    <a href="#products" class="cat-card">
+    <a href="#" onclick="showCategory('smarthome');return false;" class="cat-card">
       <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <div class="cat-nm">Розумний дім</div><div class="cat-cnt">40+ товарів</div>
     </a>
-    <a href="#products" class="cat-card">
+    <a href="#" onclick="showCategory('wireless');return false;" class="cat-card">
       <div class="cat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></div>
       <div class="cat-nm">Бездротовий Зв'язок</div><div class="cat-cnt">35+ товарів</div>
     </a>
@@ -1078,6 +1078,108 @@ function searchProducts(query){
     </div>`).join('');
 }
 
+
+// ===== CATEGORY PAGES =====
+const categoryData = {
+  powerbanks: {
+    title: 'Павербанки і Зарядні станції',
+    products: [
+      {name:'Павербанк Hoco J136B Sirui 30000mAh', price:'₴985', priceNum:985, badge:'Хіт', desc:'⚡ 22.5W + PD20W · 2×USB-A / Type-C / microUSB · LED-дисплей', img:'https://hocotech.com/wp-content/uploads/2025/06/hoco-j136b-sirui-22-5w-pd20w-power-bank-30000mah.jpg'},
+    ]
+  },
+  headphones: {
+    title: 'Навушники',
+    products: []
+  },
+  accessories: {
+    title: 'Аксесуари',
+    products: [
+      {name:'Чохол Premium', price:'₴490', priceNum:490, badge:'', desc:'Захист для вашого пристрою', img:''},
+    ]
+  },
+  auto: {
+    title: 'Авто-гаджети',
+    products: [
+      {name:'Веб-камера', price:'₴2 190', priceNum:2190, badge:'', desc:'Якісна веб-камера для авто', img:''},
+    ]
+  },
+  smarthome: {
+    title: 'Розумний дім',
+    products: []
+  },
+  wireless: {
+    title: 'Бездротовий Зв\'язок',
+    products: []
+  }
+};
+
+function showCategory(key) {
+  const data = categoryData[key];
+  if (!data) return;
+
+  // Set title
+  document.getElementById('catPageTitle').textContent = data.title;
+
+  // Render products
+  const grid = document.getElementById('catProductsGrid');
+  const empty = document.getElementById('catEmpty');
+
+  if (!data.products || data.products.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    grid.innerHTML = data.products.map(p => `
+      <div style="background:white;border-radius:20px;border:1px solid #E5E7EB;overflow:hidden;transition:all .25s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 14px 40px rgba(108,43,217,0.10)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+        <div style="height:180px;background:#F3F0FF;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+          ${p.badge ? `<div style="position:absolute;top:12px;left:12px;background:linear-gradient(135deg,#6C2BD9,#A855F7);color:white;font-size:11px;font-weight:700;padding:4px 12px;border-radius:50px;">${p.badge}</div>` : ''}
+          ${p.img
+            ? `<img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain;padding:10px;" onerror="this.style.display='none'"/>`
+            : `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>`
+          }
+        </div>
+        <div style="padding:16px;">
+          <div style="font-weight:700;font-size:15px;margin-bottom:5px;color:#0D0D1A;">${p.name}</div>
+          <div style="font-size:12px;color:#9CA3AF;margin-bottom:12px;line-height:1.5;">${p.desc}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${p.price}</div>
+            <button onclick="addToCart('${p.name.replace(/'/g,"\'")}','${p.price}',${p.priceNum})" style="background:linear-gradient(135deg,#6C2BD9,#A855F7);color:white;border:none;padding:9px 18px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;">До кошика</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Show page
+  const page = document.getElementById('categoryPage');
+  page.style.display = 'block';
+  page.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+
+  // Update cart badge on category page
+  updateCatCartBadge();
+}
+
+function hideCategory() {
+  document.getElementById('categoryPage').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function updateCatCartBadge() {
+  const badge = document.getElementById('catCartBadge');
+  if (!badge) return;
+  const total = cart.reduce((s,i) => s+i.qty, 0);
+  badge.style.display = total > 0 ? 'flex' : 'none';
+  badge.textContent = total;
+}
+
+// Override updateCartBadge to also update cat badge
+const _origUpdateBadge = updateCartBadge;
+function updateCartBadge() {
+  _origUpdateBadge();
+  updateCatCartBadge();
+}
+
 // Backdrop clicks
 document.addEventListener('click', function(e){
   if(e.target.id==='cartModal') closeCart();
@@ -1187,6 +1289,33 @@ document.addEventListener('click', function(e){
     <button onclick="closeSuccess()" style="width:100%;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:13px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
       Чудово! 🎉
     </button>
+  </div>
+</div>
+
+<!-- ===== CATEGORY PAGES ===== -->
+<div id="categoryPage" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:white;z-index:500;overflow-y:auto;">
+  
+  <!-- Category page nav -->
+  <div style="position:sticky;top:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-bottom:1px solid #E5E7EB;z-index:10;padding:0 5%;height:64px;display:flex;align-items:center;gap:16px;">
+    <button onclick="hideCategory()" style="display:flex;align-items:center;gap:8px;background:#F3F0FF;border:none;border-radius:50px;padding:9px 18px;font-size:14px;font-weight:700;color:#6C2BD9;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+      Назад
+    </button>
+    <div id="catPageTitle" style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#0D0D1A;"></div>
+    <button onclick="openCart()" style="margin-left:auto;position:relative;background:#F3F0FF;border:none;width:42px;height:42px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6C2BD9" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+      <span id="catCartBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#EC4899;color:white;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;align-items:center;justify-content:center;line-height:18px;text-align:center;"></span>
+    </button>
+  </div>
+
+  <!-- Category content -->
+  <div style="padding:32px 5%;">
+    <div id="catProductsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;"></div>
+    <div id="catEmpty" style="display:none;text-align:center;padding:60px 0;">
+      <div style="font-size:48px;margin-bottom:16px;">📦</div>
+      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;">Товарів поки немає</div>
+      <div style="color:#6B7280;font-size:14px;">Скоро тут з'являться нові товари!</div>
+    </div>
   </div>
 </div>
 </body>
