@@ -818,441 +818,376 @@ footer{
     <a href="#contacts">Контакти</a>
   </div>
 </footer>
-
 <script>
-  // Nav shadow on scroll
-  window.addEventListener('scroll', () => {
-    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+// ===== NAV SCROLL =====
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if(nav) nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ===== DRAGGABLE CHAT =====
+let chatDragging=false, chatDragOffX=0, chatDragOffY=0, chatMoved=false;
+const chatBtn = document.getElementById('chatBtn');
+if(chatBtn){
+  chatBtn.addEventListener('mousedown', function(e){
+    chatDragging=true; chatMoved=false;
+    chatDragOffX=e.clientX-chatBtn.getBoundingClientRect().left;
+    chatDragOffY=e.clientY-chatBtn.getBoundingClientRect().top;
+    e.preventDefault();
   });
+  chatBtn.addEventListener('touchstart', function(e){
+    const t=e.touches[0]; chatDragging=true; chatMoved=false;
+    chatDragOffX=t.clientX-chatBtn.getBoundingClientRect().left;
+    chatDragOffY=t.clientY-chatBtn.getBoundingClientRect().top;
+  },{passive:true});
+}
+document.addEventListener('mousemove', function(e){
+  if(!chatDragging) return; chatMoved=true;
+  let x=Math.max(0,Math.min(window.innerWidth-chatBtn.offsetWidth, e.clientX-chatDragOffX));
+  let y=Math.max(0,Math.min(window.innerHeight-chatBtn.offsetHeight, e.clientY-chatDragOffY));
+  chatBtn.style.left=x+'px'; chatBtn.style.top=y+'px'; chatBtn.style.right='auto'; chatBtn.style.bottom='auto';
+});
+document.addEventListener('touchmove', function(e){
+  if(!chatDragging) return; chatMoved=true;
+  const t=e.touches[0];
+  let x=Math.max(0,Math.min(window.innerWidth-chatBtn.offsetWidth, t.clientX-chatDragOffX));
+  let y=Math.max(0,Math.min(window.innerHeight-chatBtn.offsetHeight, t.clientY-chatDragOffY));
+  chatBtn.style.left=x+'px'; chatBtn.style.top=y+'px'; chatBtn.style.right='auto'; chatBtn.style.bottom='auto';
+},{passive:true});
+document.addEventListener('mouseup', ()=>{ chatDragging=false; });
+document.addEventListener('touchend', ()=>{ chatDragging=false; });
+
+function toggleChat(e){
+  if(chatMoved){ chatMoved=false; return; }
+  const popup=document.getElementById('chatPopup');
+  const btn=document.getElementById('chatBtn');
+  if(!popup) return;
+  const isOpen = popup.style.display!=='none';
+  if(isOpen){ popup.style.display='none'; return; }
+  popup.style.display='block';
+  const r=btn.getBoundingClientRect();
+  popup.style.left=Math.max(10,Math.min(window.innerWidth-330, r.left))+'px';
+  popup.style.top=Math.max(10, r.top-460)+'px';
+  popup.style.right='auto'; popup.style.bottom='auto';
+}
+
+// ===== BOT =====
+const botKnowledge={
+  catalog:{keys:['товар','каталог','асортимент','що є','категор'],answer:'🛍 <b>Каталог:</b><br>⚡ Павербанки і Зарядні станції<br>🎧 Навушники<br>🚗 Авто-гаджети<br>💜 Аксесуари<br>📡 Бездротовий зв&#39;язок<br>🏠 Розумний дім'},
+  price:{keys:['ціна','скільки','вартість','грн','коштує'],answer:'💰 <b>Ціни:</b><br>Павербанк Hoco 30000mAh — <b>₴985</b><br>Чохол Premium — <b>₴490</b><br>Навушники, Веб-камера — уточнюйте у менеджера<br>📞 +380 97 976 56 39'},
+  delivery:{keys:['доставк','нова пошта','укрпошта','оплат','накладен','передплат'],answer:'🚚 <b>Доставка:</b><br>📦 Нова Пошта — 1-2 дні<br>📮 Укрпошта — 2-4 дні<br><br>💳 <b>Оплата:</b><br>Передплата або накладений платіж'},
+  contacts:{keys:['контакт','телефон','номер','telegram','viber','пошта'],answer:'📞 <b>Контакти:</b><br>+380 97 976 56 39<br>rozetkaivan54@gmail.com<br>Пн-Нд: 10:00–19:00'},
+  guarantee:{keys:['гарантія','поверн','якість','брак','обмін'],answer:'✅ <b>Гарантія:</b><br>Повернення — 14 днів<br>Обмін без зайвих питань'},
+  order:{keys:['замовлен','купити','оформ','хочу'],answer:'✅ <b>Замовлення:</b><br>1. Натисніть «До кошика»<br>2. Відкрийте кошик 🛒<br>3. Натисніть «Оформити замовлення»<br>4. Заповніть форму'},
+};
+function addBotMsg(text,isUser=false){
+  const c=document.getElementById('botMessages'); if(!c) return;
+  const d=document.createElement('div');
+  d.style.cssText=isUser
+    ?'background:linear-gradient(135deg,#6C2BD9,#A855F7);border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:13px;color:white;max-width:85%;align-self:flex-end;margin-left:auto;'
+    :'background:white;border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:13px;color:#374151;line-height:1.6;max-width:92%;box-shadow:0 2px 8px rgba(0,0,0,0.06);';
+  isUser ? d.textContent=text : d.innerHTML=text;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+function addTyping(){
+  const c=document.getElementById('botMessages'); if(!c) return;
+  const d=document.createElement('div'); d.id='botTyping';
+  d.style.cssText='background:white;border-radius:14px 14px 14px 4px;padding:12px 16px;font-size:18px;color:#9CA3AF;box-shadow:0 2px 8px rgba(0,0,0,0.06);';
+  d.textContent='● ● ●'; c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+function removeTyping(){ const t=document.getElementById('botTyping'); if(t)t.remove(); }
+function botAnswer(key){
+  const data=botKnowledge[key]; if(!data) return;
+  addTyping();
+  setTimeout(()=>{ removeTyping(); addBotMsg(data.answer); },700);
+}
+function sendBotMsg(){
+  const input=document.getElementById('botInput'); if(!input) return;
+  const text=input.value.trim(); if(!text) return;
+  input.value=''; addBotMsg(text,true); addTyping();
+  setTimeout(()=>{
+    removeTyping();
+    const lower=text.toLowerCase();
+    let found=false;
+    for(const[key,data] of Object.entries(botKnowledge)){
+      if(data.keys.some(k=>lower.includes(k))){ addBotMsg(data.answer); found=true; break; }
+    }
+    if(!found) addBotMsg('Вибачте, не зрозумів 😔<br>Дзвоніть: <b>+380 97 976 56 39</b><br>або натисніть 🛒 і залиште заявку');
+  },900);
+}
+
+// ===== PRODUCT QTY =====
+function changeProductQty(pid, delta){
+  const el=document.getElementById(pid+'-qty'); if(!el) return;
+  let val=parseInt(el.textContent)+delta;
+  if(val<1) val=1; if(val>99) val=99;
+  el.textContent=val;
+}
+
+// ===== CART =====
+let cart=[];
+let cartStep=1;
+
+function addToCartQty(name, price, priceNum, pid){
+  const el=document.getElementById(pid+'-qty');
+  const qty=el ? parseInt(el.textContent) : 1;
+  const existing=cart.find(i=>i.name===name);
+  if(existing){ existing.qty+=qty; } else { cart.push({name,price,priceNum,qty}); }
+  if(el) el.textContent='1';
+  cartStep=1; updateCartBadge(); renderCart(); openCart();
+}
+function addToCart(name, price, priceNum){
+  const existing=cart.find(i=>i.name===name);
+  if(existing){ existing.qty++; } else { cart.push({name,price,priceNum,qty:1}); }
+  cartStep=1; updateCartBadge(); renderCart(); openCart();
+}
+function updateCartBadge(){
+  const badge=document.getElementById('cartBadge'); if(!badge) return;
+  const total=cart.reduce((s,i)=>s+i.qty,0);
+  badge.style.display=total>0?'flex':'none';
+  badge.textContent=total;
+}
+function renderCart(){
+  const container=document.getElementById('cartItems');
+  const empty=document.getElementById('cartEmpty');
+  const footer=document.getElementById('cartFooter');
+  const totalEl=document.getElementById('cartTotal');
+  const form=document.getElementById('cartOrderForm');
+  const btn=document.getElementById('cartMainBtn');
+  if(cart.length===0){
+    if(container) container.innerHTML='';
+    if(empty) empty.style.display='block';
+    if(footer) footer.style.display='none';
+    if(form) form.style.display='none';
+    cartStep=1; return;
+  }
+  if(empty) empty.style.display='none';
+  if(footer) footer.style.display='block';
+  if(cartStep===1){
+    if(form) form.style.display='none';
+    if(container){ container.style.display='flex';
+      container.innerHTML=cart.map((item,idx)=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#F9F7FF;border-radius:14px;border:1px solid #EDE9FE;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:14px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+            <div style="font-size:13px;color:#6C2BD9;font-weight:700;">${item.price}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+            <button onclick="changeQty(${idx},-1)" style="width:28px;height:28px;border-radius:8px;border:2px solid #E5E7EB;background:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
+            <span style="font-weight:700;font-size:15px;min-width:22px;text-align:center;">${item.qty}</span>
+            <button onclick="changeQty(${idx},1)" style="width:28px;height:28px;border-radius:8px;border:none;background:#6C2BD9;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+          </div>
+          <button onclick="removeFromCart(${idx})" style="background:#FEE2E2;border:none;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:13px;">🗑</button>
+        </div>`).join('');
+    }
+    if(btn) btn.innerHTML='📦 Оформити замовлення';
+  } else {
+    if(container) container.style.display='none';
+    if(form) form.style.display='block';
+    if(btn) btn.innerHTML='✅ Підтвердити замовлення';
+  }
+  const total=cart.reduce((s,i)=>s+i.priceNum*i.qty,0);
+  if(totalEl) totalEl.textContent='₴'+total.toLocaleString('uk-UA');
+}
+function changeQty(idx,delta){
+  cart[idx].qty+=delta;
+  if(cart[idx].qty<=0) cart.splice(idx,1);
+  updateCartBadge(); renderCart();
+}
+function removeFromCart(idx){ cart.splice(idx,1); updateCartBadge(); renderCart(); }
+function openCart(){
+  renderCart();
+  const m=document.getElementById('cartModal'); if(!m) return;
+  m.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeCart(){
+  const m=document.getElementById('cartModal'); if(!m) return;
+  m.style.display='none';
+  document.body.style.overflow='';
+}
+function cartNextStep(){
+  if(cartStep===1){ cartStep=2; renderCart(); }
+  else { submitCartOrder(); }
+}
+function selectCartPayment(type){
+  const p1=document.getElementById('cpay1');
+  const p2=document.getElementById('cpay2');
+  if(p1) p1.style.borderColor=type==='prepay'?'#6C2BD9':'#E5E7EB';
+  if(p2) p2.style.borderColor=type==='cod'?'#6C2BD9':'#E5E7EB';
+}
+function submitCartOrder(){
+  const name=document.getElementById('cName')?.value.trim();
+  const phone=document.getElementById('cPhone')?.value.trim();
+  const city=document.getElementById('cCity')?.value.trim();
+  const np=document.getElementById('cNP')?.value.trim();
+  const payment=document.querySelector('input[name="cartPayment"]:checked');
+  const callback=document.getElementById('cCallback')?.checked;
+  const err=document.getElementById('cartFormError');
+  if(!name||!phone||!city||!np||!payment){
+    if(err){ err.textContent='⚠️ Заповніть всі поля та оберіть спосіб оплати.'; err.style.display='block'; } return;
+  }
+  if(err) err.style.display='none';
+  const items=cart.map(i=>`${i.name} ×${i.qty} — ${i.price}`).join('<br>');
+  const total=cart.reduce((s,i)=>s+i.priceNum*i.qty,0);
+  const payLabel=payment.value==='prepay'?'Передплата':'Накладений платіж';
+  const cbMsg=callback?'<br>📞 <b>Клієнт просить передзвонити</b>':'';
+  const si=document.getElementById('successItems');
+  const st=document.getElementById('successTotal');
+  const sn=document.getElementById('successName');
+  const sp=document.getElementById('successPhone');
+  const sc=document.getElementById('successCity');
+  const spay=document.getElementById('successPayment');
+  const scb=document.getElementById('successCallback');
+  if(si) si.innerHTML=items;
+  if(st) st.textContent='₴'+total.toLocaleString('uk-UA');
+  if(sn) sn.textContent=name;
+  if(sp) sp.textContent=phone;
+  if(sc) sc.textContent=city+', '+np;
+  if(spay) spay.textContent=payLabel;
+  if(scb) scb.innerHTML=cbMsg;
+  closeCart();
+  const sm=document.getElementById('successModal');
+  if(sm){ sm.style.display='flex'; document.body.style.overflow='hidden'; }
+  cart=[]; cartStep=1; updateCartBadge();
+}
+function closeSuccess(){
+  const m=document.getElementById('successModal'); if(!m) return;
+  m.style.display='none'; document.body.style.overflow='';
+  cart=[]; cartStep=1; updateCartBadge();
+}
+
+// ===== SEARCH =====
+const allProducts=[
+  {name:'Павербанк Hoco J136B Sirui 30000mAh',price:'₴985',priceNum:985,cat:'Павербанки і Зарядні станції'},
+  {name:'Навушники',price:'₴3 290',priceNum:3290,cat:'Навушники'},
+  {name:'Чохол Premium',price:'₴490',priceNum:490,cat:'Аксесуари'},
+  {name:'Веб-камера',price:'₴2 190',priceNum:2190,cat:'Електроніка'},
+];
+function searchProducts(query){
+  const box=document.getElementById('searchResults'); if(!box) return;
+  if(!query.trim()){ box.innerHTML=''; box.style.display='none'; return; }
+  const q=query.toLowerCase();
+  const found=allProducts.filter(p=>p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q));
+  box.style.display='block';
+  if(!found.length){ box.innerHTML='<div style="padding:16px;text-align:center;color:#9CA3AF;font-size:13px;">😕 Нічого не знайдено</div>'; return; }
+  box.innerHTML=found.map(p=>`
+    <div onclick="addToCart('${p.name}','${p.price}',${p.priceNum})" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;border-bottom:1px solid #F3F4F6;" onmouseover="this.style.background='#F9F7FF'" onmouseout="this.style.background='white'">
+      <div><div style="font-weight:700;font-size:13px;">${p.name}</div><div style="font-size:11px;color:#9CA3AF;margin-top:2px;">${p.cat}</div></div>
+      <div style="font-weight:800;font-size:14px;color:#6C2BD9;">${p.price}</div>
+    </div>`).join('');
+}
+
+// Backdrop clicks
+document.addEventListener('click', function(e){
+  if(e.target.id==='cartModal') closeCart();
+  if(e.target.id==='successModal') closeSuccess();
+});
 </script>
-<!-- ORDER MODAL -->
-<div id="orderModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:white;border-radius:24px;padding:36px;max-width:480px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">
-    
-    <!-- Close -->
-    <button onclick="closeModal()" style="position:absolute;top:16px;right:16px;background:#f1f1f1;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
 
-    <!-- Header -->
-    <div style="margin-bottom:24px;">
-      <div style="font-size:12px;font-weight:700;letter-spacing:2px;color:#6C2BD9;text-transform:uppercase;margin-bottom:8px;">Оформлення замовлення</div>
-      <h3 id="modalProductName" style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#0D0D1A;margin-bottom:4px;"></h3>
-      <div id="modalProductPrice" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></div>
+<!-- CART MODAL -->
+<div id="cartModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9998;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);overflow-y:auto;">
+  <div style="background:white;border-radius:24px;width:calc(100% - 32px);max-width:500px;margin:40px auto;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);display:flex;flex-direction:column;overflow:hidden;">
+    <div style="padding:22px 24px 14px;border-bottom:1px solid #F3F4F6;flex-shrink:0;">
+      <button onclick="closeCart()" style="position:absolute;top:14px;right:14px;background:#f1f1f1;border:none;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;">✕</button>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#6C2BD9;text-transform:uppercase;margin-bottom:4px;">🛒 Кошик</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#0D0D1A;">Ваше замовлення</h3>
     </div>
-
-    <!-- Form -->
-    <div style="display:flex;flex-direction:column;gap:14px;">
-      
-      <div>
-        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">👤 Ваше ім'я *</label>
-        <input id="orderName" type="text" placeholder="Іван Іваненко" style="width:100%;padding:12px 16px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+    <div style="overflow-y:auto;flex:1;padding:18px 24px;">
+      <div id="cartItems" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+      <div id="cartEmpty" style="text-align:center;padding:28px 0;color:#9CA3AF;">
+        <div style="font-size:40px;margin-bottom:10px;">🛒</div>
+        <div style="font-weight:600;font-size:15px;">Кошик порожній</div>
+        <div style="font-size:13px;margin-top:4px;">Додайте товари зі сторінки</div>
       </div>
-
-      <div>
-        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">📱 Номер телефону *</label>
-        <input id="orderPhone" type="tel" placeholder="+38 (099) 000-00-00" style="width:100%;padding:12px 16px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
-      </div>
-
-      <div>
-        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">🏙️ Місто *</label>
-        <input id="orderCity" type="text" placeholder="Київ" style="width:100%;padding:12px 16px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
-      </div>
-
-      <div>
-        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">📦 Відділення Нової Пошти *</label>
-        <input id="orderNP" type="text" placeholder="Відділення №1 або поштомат" style="width:100%;padding:12px 16px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
-      </div>
-
-      <div>
-        <label style="font-size:13px;font-weight:700;color:#374151;display:block;margin-bottom:10px;">💳 Спосіб оплати *</label>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <label style="display:flex;align-items:flex-start;gap:12px;padding:14px;border:2px solid #E5E7EB;border-radius:12px;cursor:pointer;transition:border .2s;" id="pay1" onclick="selectPayment('prepay')">
-            <input type="radio" name="payment" value="prepay" style="margin-top:2px;accent-color:#6C2BD9;"/>
+      <div id="cartOrderForm" style="display:none;">
+        <div style="font-size:12px;font-weight:700;color:#6C2BD9;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📦 Куди відправити</div>
+        <div style="display:flex;flex-direction:column;gap:11px;">
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:4px;">👤 Ім'я та прізвище *</label>
+            <input id="cName" type="text" placeholder="Іван Іваненко" style="width:100%;padding:10px 13px;border:2px solid #E5E7EB;border-radius:11px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:4px;">📱 Номер телефону *</label>
+            <input id="cPhone" type="tel" placeholder="+38 (097) 976-56-39" style="width:100%;padding:10px 13px;border:2px solid #E5E7EB;border-radius:11px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:4px;">🏙️ Місто *</label>
+            <input id="cCity" type="text" placeholder="Київ" style="width:100%;padding:10px 13px;border:2px solid #E5E7EB;border-radius:11px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:4px;">📦 Відділення Нової Пошти *</label>
+            <input id="cNP" type="text" placeholder="Відділення №1 або поштомат" style="width:100%;padding:10px 13px;border:2px solid #E5E7EB;border-radius:11px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
+          </div>
+          <label style="display:flex;align-items:flex-start;gap:11px;background:#F9F7FF;border-radius:11px;padding:12px;cursor:pointer;border:2px solid #EDE9FE;">
+            <input id="cCallback" type="checkbox" style="width:17px;height:17px;accent-color:#6C2BD9;margin-top:2px;flex-shrink:0;cursor:pointer;"/>
             <div>
-              <div style="font-weight:700;font-size:14px;">💸 Передплата</div>
-              <div style="font-size:12px;color:#6B7280;margin-top:2px;">Оплата на картку до відправки. Відправляємо того ж дня.</div>
+              <div style="font-weight:700;font-size:13px;color:#0D0D1A;">📞 Передзвоніть мені</div>
+              <div style="font-size:12px;color:#6B7280;margin-top:1px;">Менеджер передзвонить для підтвердження</div>
             </div>
           </label>
-          <label style="display:flex;align-items:flex-start;gap:12px;padding:14px;border:2px solid #E5E7EB;border-radius:12px;cursor:pointer;transition:border .2s;" id="pay2" onclick="selectPayment('cod')">
-            <input type="radio" name="payment" value="cod" style="margin-top:2px;accent-color:#6C2BD9;"/>
-            <div>
-              <div style="font-weight:700;font-size:14px;">📬 Накладений платіж</div>
-              <div style="font-size:12px;color:#6B7280;margin-top:2px;">Оплата при отриманні у відділенні. +20 грн комісія Нової Пошти.</div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:6px;">💳 Спосіб оплати *</label>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <label style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;border:2px solid #E5E7EB;border-radius:11px;cursor:pointer;" id="cpay1" onclick="selectCartPayment('prepay')">
+                <input type="radio" name="cartPayment" value="prepay" style="margin-top:2px;accent-color:#6C2BD9;"/>
+                <div><div style="font-weight:700;font-size:13px;">💸 Передплата</div><div style="font-size:12px;color:#6B7280;margin-top:1px;">На картку — відправляємо того ж дня</div></div>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;border:2px solid #E5E7EB;border-radius:11px;cursor:pointer;" id="cpay2" onclick="selectCartPayment('cod')">
+                <input type="radio" name="cartPayment" value="cod" style="margin-top:2px;accent-color:#6C2BD9;"/>
+                <div><div style="font-weight:700;font-size:13px;">📬 Накладений платіж</div><div style="font-size:12px;color:#6B7280;margin-top:1px;">Оплата при отриманні (+20 грн НП)</div></div>
+              </label>
             </div>
-          </label>
+          </div>
+          <div id="cartFormError" style="display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:9px;padding:11px;font-size:13px;color:#DC2626;"></div>
         </div>
       </div>
-
-      <div id="orderError" style="display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px;font-size:13px;color:#DC2626;"></div>
-
-      <button onclick="submitOrder()" style="background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:16px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;box-shadow:0 6px 20px rgba(108,43,217,0.35);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-        ✅ Підтвердити замовлення
+    </div>
+    <div id="cartFooter" style="display:none;padding:14px 24px 20px;border-top:1px solid #F3F4F6;flex-shrink:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span style="font-weight:600;color:#6B7280;font-size:14px;">Загальна сума:</span>
+        <span id="cartTotal" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></span>
+      </div>
+      <button id="cartMainBtn" onclick="cartNextStep()" style="width:100%;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:14px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 6px 20px rgba(108,43,217,0.35);">
+        📦 Оформити замовлення
       </button>
     </div>
   </div>
 </div>
 
 <!-- SUCCESS MODAL -->
-<div id="successModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:white;border-radius:24px;padding:32px 28px;max-width:440px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">
-    <div style="text-align:center;margin-bottom:20px;">
-      <div style="font-size:56px;margin-bottom:12px;">🎉</div>
-      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;">Замовлення прийнято!</h3>
-      <p style="color:#6B7280;font-size:14px;">Дякуємо! Ми зв'яжемось з вами найближчим часом.</p>
+<div id="successModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);overflow-y:auto;">
+  <div style="background:white;border-radius:24px;padding:28px 24px;max-width:420px;width:calc(100%-32px);margin:40px auto;box-shadow:0 24px 80px rgba(0,0,0,0.2);">
+    <div style="text-align:center;margin-bottom:18px;">
+      <div style="font-size:50px;margin-bottom:10px;">🎉</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:5px;">Замовлення прийнято!</h3>
+      <p style="color:#6B7280;font-size:13px;">Дякуємо! Ми зв'яжемось з вами найближчим часом.</p>
     </div>
-    <!-- Order summary -->
-    <div style="background:#F9F7FF;border-radius:16px;padding:18px;margin-bottom:16px;border:1px solid #EDE9FE;">
-      <div style="font-size:11px;font-weight:700;color:#6C2BD9;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📋 Деталі замовлення</div>
+    <div style="background:#F9F7FF;border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid #EDE9FE;">
+      <div style="font-size:11px;font-weight:700;color:#6C2BD9;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📋 Деталі</div>
       <div id="successItems" style="font-size:13px;color:#374151;line-height:1.8;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #EDE9FE;"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;justify-content:space-between;">
         <span style="font-size:13px;color:#6B7280;font-weight:600;">Сума:</span>
-        <span id="successTotal" style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,#6C2BD9,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></span>
+        <span id="successTotal" style="font-family:'Syne',sans-serif;font-weight:800;font-size:17px;background:linear-gradient(135deg,#6C2BD9,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></span>
       </div>
     </div>
-    <!-- Delivery info -->
-    <div style="background:#F0FDF4;border-radius:16px;padding:18px;margin-bottom:16px;border:1px solid #BBF7D0;">
-      <div style="font-size:11px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📦 Дані доставки</div>
-      <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#374151;">
-        <div style="display:flex;gap:8px;"><span style="color:#6B7280;min-width:70px;">Отримувач:</span><span id="successName" style="font-weight:600;"></span></div>
-        <div style="display:flex;gap:8px;"><span style="color:#6B7280;min-width:70px;">Телефон:</span><span id="successPhone" style="font-weight:600;"></span></div>
-        <div style="display:flex;gap:8px;"><span style="color:#6B7280;min-width:70px;">Адреса:</span><span id="successCity" style="font-weight:600;"></span></div>
-        <div style="display:flex;gap:8px;"><span style="color:#6B7280;min-width:70px;">Оплата:</span><span id="successPayment" style="font-weight:600;"></span></div>
+    <div style="background:#F0FDF4;border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid #BBF7D0;">
+      <div style="font-size:11px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📦 Доставка</div>
+      <div style="display:flex;flex-direction:column;gap:5px;font-size:13px;">
+        <div><span style="color:#6B7280;">Отримувач: </span><span id="successName" style="font-weight:600;"></span></div>
+        <div><span style="color:#6B7280;">Телефон: </span><span id="successPhone" style="font-weight:600;"></span></div>
+        <div><span style="color:#6B7280;">Адреса: </span><span id="successCity" style="font-weight:600;"></span></div>
+        <div><span style="color:#6B7280;">Оплата: </span><span id="successPayment" style="font-weight:600;"></span></div>
       </div>
-      <div id="successCallback" style="margin-top:10px;font-size:13px;color:#16A34A;font-weight:600;"></div>
+      <div id="successCallback" style="margin-top:8px;font-size:13px;color:#16A34A;font-weight:600;"></div>
     </div>
-    <div style="text-align:center;font-size:13px;color:#6B7280;margin-bottom:20px;">
-      📞 Телефон магазину: <a href="tel:+380979765639" style="color:#6C2BD9;font-weight:700;text-decoration:none;">+380 97 976 56 39</a>
+    <div style="text-align:center;font-size:13px;color:#6B7280;margin-bottom:16px;">
+      📞 <a href="tel:+380979765639" style="color:#6C2BD9;font-weight:700;text-decoration:none;">+380 97 976 56 39</a>
     </div>
-    <button onclick="closeSuccess()" style="width:100%;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:14px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
+    <button onclick="closeSuccess()" style="width:100%;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:13px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">
       Чудово! 🎉
     </button>
   </div>
 </div>
-
-<script>
-function openModal(name, price) {
-  document.getElementById('modalProductName').textContent = name;
-  document.getElementById('modalProductPrice').textContent = price;
-  document.getElementById('orderModal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-  // reset form
-  ['orderName','orderPhone','orderCity','orderNP'].forEach(id => document.getElementById(id).value = '');
-  document.querySelectorAll('input[name="payment"]').forEach(r => r.checked = false);
-  document.getElementById('orderError').style.display = 'none';
-}
-function closeModal() {
-  document.getElementById('orderModal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-function closeSuccess() {
-  document.getElementById('successModal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-function selectPayment(type) {
-  document.getElementById('pay1').style.borderColor = type === 'prepay' ? '#6C2BD9' : '#E5E7EB';
-  document.getElementById('pay2').style.borderColor = type === 'cod' ? '#6C2BD9' : '#E5E7EB';
-}
-function submitOrder() {
-  const name = document.getElementById('orderName').value.trim();
-  const phone = document.getElementById('orderPhone').value.trim();
-  const city = document.getElementById('orderCity').value.trim();
-  const np = document.getElementById('orderNP').value.trim();
-  const payment = document.querySelector('input[name="payment"]:checked');
-  const err = document.getElementById('orderError');
-
-  if (!name || !phone || !city || !np || !payment) {
-    err.textContent = '⚠️ Будь ласка, заповніть всі поля та оберіть спосіб оплати.';
-    err.style.display = 'block';
-    return;
-  }
-<!-- FLOATING CHAT BUTTON -->
-<!-- DRAGGABLE CHAT BUTTON -->
-<div id="chatBtn" style="position:fixed;bottom:28px;right:28px;z-index:9997;user-select:none;touch-action:none;">
-  <button id="chatBtnInner" onclick="toggleChat(event)" style="background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;border-radius:50%;width:64px;height:64px;cursor:grab;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(108,43,217,0.55);transition:all .25s;position:relative;">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-    <span style="position:absolute;top:-4px;right:-4px;background:#4ade80;width:16px;height:16px;border-radius:50%;border:2px solid white;animation:onlinePulse 2s infinite;"></span>
-  </button>
-  <div style="position:absolute;bottom:72px;right:0;background:#0F172A;color:white;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;" id="chatTooltip">Чат з нами 💬</div>
-</div>
-<style>
-@keyframes onlinePulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.6)}50%{box-shadow:0 0 0 6px rgba(74,222,128,0)}}
-#chatBtnInner:hover{transform:scale(1.1);box-shadow:0 10px 32px rgba(108,43,217,0.65);}
-#chatBtn:hover #chatTooltip{opacity:1;}
-</style>
-
-<!-- CHAT POPUP -->
-<div id="chatPopup" style="display:none;position:fixed;bottom:90px;right:28px;z-index:9996;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.2);width:320px;overflow:hidden;border:1px solid #EDE9FE;font-family:'Plus Jakarta Sans',sans-serif;">
-  <div style="background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);padding:16px 18px;display:flex;align-items:center;gap:12px;">
-    <div style="width:40px;height:40px;background:rgba(255,255,255,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🤖</div>
-    <div style="flex:1;">
-      <div style="color:white;font-weight:700;font-size:15px;">Tekvy Бот</div>
-      <div style="color:rgba(255,255,255,0.85);font-size:12px;display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;background:#4ade80;border-radius:50%;display:inline-block;"></span> Онлайн</div>
-    </div>
-    <button onclick="toggleChat(event)" style="background:rgba(255,255,255,0.2);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;flex-shrink:0;line-height:1;">×</button>
-  </div>
-  <div id="botMessages" style="height:290px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#F9F7FF;">
-    <div style="background:white;border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:13px;color:#374151;line-height:1.55;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
-      👋 Привіт! Я бот <b>Tekvy</b>. Оберіть тему або напишіть питання:
-      <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
-        <button onclick="botAnswer('catalog')" style="background:#F3F0FF;border:1px solid #EDE9FE;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;color:#6C2BD9;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;">🛍 Каталог товарів</button>
-        <button onclick="botAnswer('price')" style="background:#F3F0FF;border:1px solid #EDE9FE;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;color:#6C2BD9;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;">💰 Ціни</button>
-        <button onclick="botAnswer('delivery')" style="background:#F3F0FF;border:1px solid #EDE9FE;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;color:#6C2BD9;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;">🚚 Доставка та оплата</button>
-        <button onclick="botAnswer('contacts')" style="background:#F3F0FF;border:1px solid #EDE9FE;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;color:#6C2BD9;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;">📞 Контакти</button>
-        <button onclick="botAnswer('guarantee')" style="background:#F3F0FF;border:1px solid #EDE9FE;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;color:#6C2BD9;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;">✅ Гарантія та повернення</button>
-        <button onclick="botAnswer('order')" style="background:linear-gradient(135deg,#6C2BD9,#A855F7);border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;color:white;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;">🛒 Зробити замовлення</button>
-      </div>
-    </div>
-  </div>
-  <div style="padding:10px 12px;border-top:1px solid #EDE9FE;display:flex;gap:8px;background:white;align-items:center;">
-    <input id="botInput" type="text" placeholder="Напишіть питання..." onkeydown="if(event.key==='Enter')sendBotMsg()" style="flex:1;padding:9px 14px;border:2px solid #E5E7EB;border-radius:50px;font-size:13px;outline:none;font-family:'Plus Jakarta Sans',sans-serif;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
-    <button onclick="sendBotMsg()" style="background:linear-gradient(135deg,#6C2BD9,#A855F7);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-    </button>
-  </div>
-</div>
-
-<!-- CART MODAL -->
-<div id="cartModal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
-  <div style="background:white;border-radius:24px;width:100%;max-width:520px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;">
-    
-    <!-- Header -->
-    <div style="padding:24px 28px 16px;border-bottom:1px solid #F3F4F6;flex-shrink:0;">
-      <button onclick="closeCart()" style="position:absolute;top:16px;right:16px;background:#f1f1f1;border:none;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer;">✕</button>
-      <div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#6C2BD9;text-transform:uppercase;margin-bottom:6px;">🛒 Кошик</div>
-      <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#0D0D1A;">Ваше замовлення</h3>
-    </div>
-
-    <!-- Scrollable body -->
-    <div style="overflow-y:auto;flex:1;padding:20px 28px;">
-
-      <!-- Cart items -->
-      <div id="cartItems" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;"></div>
-      <div id="cartEmpty" style="text-align:center;padding:32px 0;color:#9CA3AF;">
-        <div style="font-size:44px;margin-bottom:10px;">🛒</div>
-        <div style="font-weight:600;font-size:15px;">Кошик порожній</div>
-        <div style="font-size:13px;margin-top:4px;">Додайте товари зі сторінки</div>
-      </div>
-
-      <!-- Order form -->
-      <div id="cartOrderForm" style="display:none;">
-        <div style="font-size:13px;font-weight:700;color:#6C2BD9;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;">📦 Куди відправити</div>
-
-        <div style="display:flex;flex-direction:column;gap:12px;">
-          <!-- Name -->
-          <div>
-            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px;">👤 Ім'я та прізвище *</label>
-            <input id="cName" type="text" placeholder="Іван Іваненко" style="width:100%;padding:11px 14px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
-          </div>
-          <!-- Phone -->
-          <div>
-            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px;">📱 Номер телефону *</label>
-            <input id="cPhone" type="tel" placeholder="+38 (097) 976-56-39" style="width:100%;padding:11px 14px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
-          </div>
-          <!-- City -->
-          <div>
-            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px;">🏙️ Місто *</label>
-            <input id="cCity" type="text" placeholder="Київ" style="width:100%;padding:11px 14px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
-          </div>
-          <!-- Nova Poshta -->
-          <div>
-            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px;">📦 Відділення Нової Пошти *</label>
-            <input id="cNP" type="text" placeholder="Відділення №1 або поштомат" style="width:100%;padding:11px 14px;border:2px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border .2s;" onfocus="this.style.borderColor='#6C2BD9'" onblur="this.style.borderColor='#E5E7EB'"/>
-          </div>
-
-          <!-- Callback checkbox -->
-          <label id="callbackBox" style="display:flex;align-items:flex-start;gap:12px;background:#F9F7FF;border-radius:12px;padding:14px;cursor:pointer;border:2px solid #EDE9FE;transition:border .2s;" onmouseover="this.style.borderColor='#6C2BD9'" onmouseout="this.style.borderColor='#EDE9FE'">
-            <input id="cCallback" type="checkbox" style="width:18px;height:18px;accent-color:#6C2BD9;margin-top:1px;flex-shrink:0;cursor:pointer;"/>
-            <div>
-              <div style="font-weight:700;font-size:14px;color:#0D0D1A;">📞 Передзвоніть мені</div>
-              <div style="font-size:12px;color:#6B7280;margin-top:2px;">Менеджер передзвонить на вказаний номер для підтвердження замовлення</div>
-            </div>
-          </label>
-
-          <!-- Payment -->
-          <div>
-            <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:8px;">💳 Спосіб оплати *</label>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <label style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:2px solid #E5E7EB;border-radius:12px;cursor:pointer;transition:border .2s;" id="cpay1" onclick="selectCartPayment('prepay')">
-                <input type="radio" name="cartPayment" value="prepay" style="margin-top:2px;accent-color:#6C2BD9;"/>
-                <div><div style="font-weight:700;font-size:14px;">💸 Передплата</div><div style="font-size:12px;color:#6B7280;margin-top:1px;">Оплата на картку — відправляємо того ж дня</div></div>
-              </label>
-              <label style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:2px solid #E5E7EB;border-radius:12px;cursor:pointer;transition:border .2s;" id="cpay2" onclick="selectCartPayment('cod')">
-                <input type="radio" name="cartPayment" value="cod" style="margin-top:2px;accent-color:#6C2BD9;"/>
-                <div><div style="font-weight:700;font-size:14px;">📬 Накладений платіж</div><div style="font-size:12px;color:#6B7280;margin-top:1px;">Оплата при отриманні (+20 грн комісія НП)</div></div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div id="cartFormError" style="display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px;font-size:13px;color:#DC2626;margin-top:12px;"></div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div id="cartFooter" style="display:none;padding:16px 28px 24px;border-top:1px solid #F3F4F6;flex-shrink:0;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <span style="font-weight:600;color:#6B7280;font-size:14px;">Загальна сума:</span>
-        <span id="cartTotal" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"></span>
-      </div>
-      <button id="cartMainBtn" onclick="cartNextStep()" style="width:100%;background:linear-gradient(135deg,#6C2BD9,#A855F7,#EC4899);color:white;border:none;padding:15px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 6px 20px rgba(108,43,217,0.35);transition:all .2s;">
-        📦 Оформити замовлення
-      </button>
-    </div>
-  </div>
-</div>// ===== CART =====
-let cart = [];
-let cartStep = 1; // 1=items, 2=form
-
-function changeProductQty(pid, delta) {
-  const el = document.getElementById(pid + '-qty');
-  if (!el) return;
-  let val = parseInt(el.textContent) + delta;
-  if (val < 1) val = 1;
-  if (val > 99) val = 99;
-  el.textContent = val;
-}
-
-function addToCartQty(name, price, priceNum, pid) {
-  const el = document.getElementById(pid + '-qty');
-  const qty = el ? parseInt(el.textContent) : 1;
-  const existing = cart.find(i => i.name === name);
-  if (existing) { existing.qty += qty; }
-  else { cart.push({name, price, priceNum, qty}); }
-  if (el) el.textContent = '1';
-  cartStep = 1;
-  updateCartBadge();
-  renderCart();
-  openCart();
-}
-
-function addToCart(name, price, priceNum) {
-  const existing = cart.find(i => i.name === name);
-  if (existing) { existing.qty++; }
-  else { cart.push({name, price, priceNum, qty:1}); }
-  cartStep = 1;
-  updateCartBadge();
-  renderCart();
-  openCart();
-}
-
-function updateCartBadge() {
-  const badge = document.getElementById('cartBadge');
-  const total = cart.reduce((s,i) => s+i.qty, 0);
-  badge.style.display = total > 0 ? 'flex' : 'none';
-  badge.textContent = total;
-}
-
-function renderCart() {
-  const container = document.getElementById('cartItems');
-  const empty = document.getElementById('cartEmpty');
-  const footer = document.getElementById('cartFooter');
-  const totalEl = document.getElementById('cartTotal');
-  const form = document.getElementById('cartOrderForm');
-  const btn = document.getElementById('cartMainBtn');
-
-  if (cart.length === 0) {
-    if(container) container.innerHTML = '';
-    if(empty) empty.style.display = 'block';
-    if(footer) footer.style.display = 'none';
-    if(form) form.style.display = 'none';
-    cartStep = 1;
-    return;
-  }
-
-  if(empty) empty.style.display = 'none';
-  if(footer) footer.style.display = 'block';
-
-  if (cartStep === 1) {
-    if(form) form.style.display = 'none';
-    if(container) container.style.display = 'flex';
-    if(btn) btn.innerHTML = '📦 Оформити замовлення';
-    if(container) container.innerHTML = cart.map((item,idx) => `
-      <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#F9F7FF;border-radius:14px;border:1px solid #EDE9FE;">
-        <div style="flex:1;min-width:0;">
-          <div style="font-weight:700;font-size:14px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
-          <div style="font-size:13px;color:#6C2BD9;font-weight:700;">${item.price}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-          <button onclick="changeQty(${idx},-1)" style="width:28px;height:28px;border-radius:8px;border:2px solid #E5E7EB;background:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">−</button>
-          <span style="font-weight:700;font-size:15px;min-width:22px;text-align:center;">${item.qty}</span>
-          <button onclick="changeQty(${idx},1)" style="width:28px;height:28px;border-radius:8px;border:none;background:#6C2BD9;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">+</button>
-        </div>
-        <button onclick="removeFromCart(${idx})" style="background:#FEE2E2;border:none;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:13px;flex-shrink:0;">🗑</button>
-      </div>
-    `).join('');
-  } else {
-    if(container) container.style.display = 'none';
-    if(form) form.style.display = 'block';
-    if(btn) btn.innerHTML = '✅ Підтвердити замовлення';
-  }
-
-  const total = cart.reduce((s,i) => s+i.priceNum*i.qty, 0);
-  if(totalEl) totalEl.textContent = '₴' + total.toLocaleString('uk-UA');
-}
-
-function changeQty(idx, delta) {
-  cart[idx].qty += delta;
-  if (cart[idx].qty <= 0) cart.splice(idx,1);
-  updateCartBadge(); renderCart();
-}
-function removeFromCart(idx) { cart.splice(idx,1); updateCartBadge(); renderCart(); }
-
-function openCart() {
-  renderCart();
-  document.getElementById('cartModal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-function closeCart() {
-  document.getElementById('cartModal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-function cartNextStep() {
-  if (cartStep === 1) {
-    cartStep = 2;
-    renderCart();
-  } else {
-    submitCartOrder();
-  }
-}
-
-function selectCartPayment(type) {
-  document.getElementById('cpay1').style.borderColor = type==='prepay' ? '#6C2BD9' : '#E5E7EB';
-  document.getElementById('cpay2').style.borderColor = type==='cod' ? '#6C2BD9' : '#E5E7EB';
-}
-
-function submitCartOrder() {
-  const name = document.getElementById('cName').value.trim();
-  const phone = document.getElementById('cPhone').value.trim();
-  const city = document.getElementById('cCity').value.trim();
-  const np = document.getElementById('cNP').value.trim();
-  const payment = document.querySelector('input[name="cartPayment"]:checked');
-  const callback = document.getElementById('cCallback').checked;
-  const err = document.getElementById('cartFormError');
-
-  if (!name||!phone||!city||!np||!payment) {
-    err.textContent = '⚠️ Заповніть всі поля та оберіть спосіб оплати.';
-    err.style.display = 'block'; return;
-  }
-  err.style.display = 'none';
-
-  // Build success message
-  const items = cart.map(i=>`${i.name} ×${i.qty} — ${i.price}`).join('<br>');
-  const total = cart.reduce((s,i)=>s+i.priceNum*i.qty,0);
-  const payLabel = payment.value==='prepay' ? 'Передплата' : 'Накладений платіж';
-  const cbMsg = callback ? '<br>📞 <b>Клієнт просить передзвонити</b> для підтвердження' : '';
-
-  document.getElementById('successItems').innerHTML = items;
-  document.getElementById('successTotal').textContent = '₴' + total.toLocaleString('uk-UA');
-  document.getElementById('successName').textContent = name;
-  document.getElementById('successPhone').textContent = phone;
-  document.getElementById('successCity').textContent = city + ', ' + np;
-  document.getElementById('successPayment').textContent = payLabel;
-  document.getElementById('successCallback').innerHTML = cbMsg;
-
-  closeCart();
-  document.getElementById('successModal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-  cart = []; cartStep = 1; updateCartBadge();
-}
-
-// ===== ORDER MODAL =====
+</body>
+</html>
