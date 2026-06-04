@@ -410,6 +410,59 @@ footer{background:#070B14;border-top:1px solid rgba(255,255,255,.06);padding:24p
   #cartSidebar{width:100%;}
   .order-box,.success-box{margin:16px auto;}
 }
+
+/* ===== PRODUCT PAGE ===== */
+#prodPage{display:none;position:fixed;inset:0;background:var(--bg);z-index:700;overflow-y:auto;}
+.prod-page-nav{position:sticky;top:0;background:rgba(248,247,255,.97);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);z-index:10;padding:0 4%;height:62px;
+  display:flex;align-items:center;gap:14px;}
+.prod-page-back{display:flex;align-items:center;gap:7px;background:var(--grad);border:none;
+  border-radius:50px;padding:9px 18px;font-size:14px;font-weight:700;color:white;
+  cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 12px rgba(124,58,237,.3);}
+.prod-page-body{padding:28px 4%;max-width:900px;margin:0 auto;}
+.prod-page-inner{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;}
+.prod-page-img-wrap{background:white;border-radius:24px;border:1px solid var(--border);
+  padding:28px;display:flex;align-items:center;justify-content:center;min-height:300px;position:relative;}
+.prod-page-img-wrap img{width:100%;max-height:320px;object-fit:contain;}
+.prod-page-img-wrap svg{width:100px;height:100px;stroke:var(--p);fill:none;stroke-width:1.2;stroke-linecap:round;}
+.prod-page-badge{position:absolute;top:14px;left:14px;background:var(--grad);color:white;
+  font-size:12px;font-weight:700;padding:4px 12px;border-radius:50px;}
+.prod-page-info{display:flex;flex-direction:column;gap:16px;}
+.prod-page-cat{font-size:12px;color:var(--p);font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+.prod-page-name{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1.2;color:var(--dark);}
+.prod-page-price-wrap{background:var(--light);border-radius:14px;padding:16px 18px;}
+.prod-page-price{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.prod-page-price-ask{font-size:15px;color:var(--gray);font-weight:600;}
+.prod-page-features{background:white;border-radius:14px;border:1px solid var(--border);padding:18px;}
+.prod-page-features-title{font-weight:700;font-size:13px;color:var(--gray);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:12px;}
+.prod-page-feature{display:flex;align-items:flex-start;gap:10px;padding:7px 0;
+  border-bottom:1px solid var(--border);font-size:14px;}
+.prod-page-feature:last-child{border-bottom:none;}
+.prod-page-feature-ico{width:28px;height:28px;background:var(--light);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.prod-page-feature-text{color:var(--dark);line-height:1.4;}
+.prod-page-actions{display:flex;flex-direction:column;gap:10px;}
+.prod-page-qty-row{display:flex;align-items:center;gap:12px;}
+.prod-page-qty-label{font-size:13px;font-weight:700;color:var(--gray);}
+.prod-page-cart-btn{background:var(--grad);color:white;border:none;padding:14px 24px;border-radius:50px;
+  font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;
+  box-shadow:0 6px 20px rgba(124,58,237,.35);transition:all .2s;}
+.prod-page-cart-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(124,58,237,.45);}
+.prod-page-cart-btn.added{background:linear-gradient(135deg,#10B981,#059669);}
+.prod-page-ask-btn{display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#E8F5FF;color:#1d90d0;border:none;padding:13px 24px;border-radius:50px;
+  font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;
+  text-decoration:none;transition:all .2s;}
+.prod-page-ask-btn:hover{background:#D0EBFF;}
+.prod-page-desc-full{background:white;border-radius:14px;border:1px solid var(--border);
+  padding:18px;margin-top:24px;}
+.prod-page-desc-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:10px;}
+.prod-page-desc-text{font-size:14px;color:var(--gray);line-height:1.75;}
+@media(max-width:768px){
+  .prod-page-inner{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
@@ -769,6 +822,62 @@ footer{background:#070B14;border-top:1px solid rgba(255,255,255,.06);padding:24p
   </div>
 </div>
 
+
+<!-- PRODUCT PAGE -->
+<div id="prodPage">
+  <div class="prod-page-nav">
+    <button class="prod-page-back" onclick="closeProdPage()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+      Назад
+    </button>
+    <div id="prodPageCat" style="font-size:13px;color:var(--gray);font-weight:600;"></div>
+    <button class="nav-icon-btn" onclick="openCart()" style="position:relative;margin-left:auto;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+      <span id="prodCartBadge" style="display:none;position:absolute;top:-5px;right:-5px;background:var(--p3);color:white;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;line-height:18px;text-align:center;"></span>
+    </button>
+  </div>
+  <div class="prod-page-body">
+    <div class="prod-page-inner">
+      <div>
+        <div class="prod-page-img-wrap" id="prodPageImgWrap">
+          <div id="prodPageImg"></div>
+          <div class="prod-page-badge" id="prodPageBadge" style="display:none;"></div>
+        </div>
+      </div>
+      <div class="prod-page-info">
+        <div class="prod-page-cat" id="prodPageCatLabel"></div>
+        <div class="prod-page-name" id="prodPageName"></div>
+        <div class="prod-page-price-wrap">
+          <div id="prodPagePriceBlock"></div>
+        </div>
+        <div class="prod-page-features">
+          <div class="prod-page-features-title">Характеристики</div>
+          <div id="prodPageFeatures"></div>
+        </div>
+        <div class="prod-page-actions">
+          <div class="prod-page-qty-row">
+            <span class="prod-page-qty-label">Кількість:</span>
+            <div class="qty-wrap">
+              <button class="qty-btn minus" onclick="chQty('qprod',-1)">−</button>
+              <span class="qty-val" id="qprod">1</span>
+              <button class="qty-btn plus" onclick="chQty('qprod',1)">+</button>
+            </div>
+          </div>
+          <button class="prod-page-cart-btn" id="prodPageCartBtn" onclick="prodPageAddCart()">🛒 До кошика</button>
+          <a href="https://t.me/+380979765639" target="_blank" class="prod-page-ask-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#1d90d0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.12.57-.47.71-.95.44l-2.62-1.93-1.27 1.22c-.14.14-.26.26-.53.26l.19-2.68 4.84-4.37c.21-.19-.05-.29-.32-.1L7.46 15.05l-2.57-.8c-.56-.17-.57-.56.12-.83l10.03-3.87c.47-.17.88.11.6.25z"/></svg>
+            Запитати в Telegram
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="prod-page-desc-full">
+      <div class="prod-page-desc-title">📋 Опис товару</div>
+      <div class="prod-page-desc-text" id="prodPageDescFull"></div>
+    </div>
+  </div>
+</div>
+
 <!-- CHAT BOT -->
 <div id="chatBtn">
   <button class="chat-bubble" onclick="toggleChat(event)">
@@ -812,46 +921,46 @@ footer{background:#070B14;border-top:1px solid rgba(255,255,255,.06);padding:24p
 // ========== DATA ==========
 const PRODUCTS = [
   // ====== ТОП-40 ПАВЕРБАНКІВ ======
-  {id:1, name:'Hoco J136B Sirui 30000mAh', price:'0', cat:'powerbanks', badge:'🏆 #9 Топ', desc:'Швидка зарядка 22.5W + PD20W | 2×USB-A, Type-C, microUSB | Розумний LED-дисплей | Заряджає смартфон до 7 разів', img:'https://hocotech.com/wp-content/uploads/2025/06/hoco-j136b-sirui-22-5w-pd20w-power-bank-30000mah.jpg'},
-  {id:2, name:'Baseus Bipow Digital Display 10000mAh', price:'0', cat:'powerbanks', badge:'🥇 #1 Топ', desc:'Компактний чемпіон продажів | 20W швидка зарядка | Цифровий дисплей заряду | Ультратонкий — поміщається в кишеню', img:'https://www.baseus.com/cdn/shop/files/PPDML-M01-1.jpg'},
-  {id:3, name:'Xiaomi Mi Power Bank 3 10000mAh', price:'0', cat:'powerbanks', badge:'🥈 #2 Топ', desc:'Легендарна надійність Xiaomi | USB-C 18W швидка зарядка | Алюмінієвий корпус | Ідеальний для щоденного носіння', img:'https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-33w-power-bank-10000-pro/M/2bd8e12cf1b34b8e.png'},
-  {id:4, name:'Baseus Adaman Metal 20000mAh 65W', price:'0', cat:'powerbanks', badge:'🥉 #3 Топ', desc:'Заряджає ноутбук та 3 гаджети одночасно | 65W PD для ноутбуків | Металевий корпус | Digital LED дисплей', img:'https://www.baseus.com/cdn/shop/files/PPIMDA-A01-1.jpg'},
-  {id:5, name:'Hoco J101B Astute 30000mAh 22.5W', price:'0', cat:'powerbanks', badge:'🏅 #4 Топ', desc:'Потужна ємність 30000mAh | Швидка зарядка 22.5W + PD20W | 2×USB-A + Type-C | Захист від перегріву та перезарядки', img:'https://hocotech.com/wp-content/uploads/2024/05/hoco-j101b-astute-fully-compatible-power-bank-30000mah.jpg'},
-  {id:6, name:'Baseus Star Lord 30000mAh 22.5W', price:'0', cat:'powerbanks', badge:'🏅 #5 Топ', desc:'Стильний дизайн із LED-дисплеєм | 22.5W швидка зарядка | 3 порти одночасно | Захист від коротких замикань', img:'https://www.baseus.com/cdn/shop/files/PPXJ080101-1.jpg'},
-  {id:7, name:'Xiaomi Mi Power Bank 3 20000mAh', price:'0', cat:'powerbanks', badge:'🏅 #6 Топ', desc:'Золота середина між ємністю та вагою | USB-C 18W Fast Charge | Два USB-A порти | Мінімалістичний стиль', img:'https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-power-bank-3-18w/M/19219d74ce84cf73.png'},
-  {id:8, name:'Romoss Sense 8+ 30000mAh', price:'0', cat:'powerbanks', badge:'🏅 #7 Топ', desc:'Реальна ємність без обману | PD + QC 3.0 швидка зарядка | 3 виходи одночасно | Ідеальний для подорожей', img:'https://www.romoss.com/uploads/product/20230601/b2af9a2c4e6f1c9e3af1c9d2b7e5a8f3.jpg'},
-  {id:9, name:'Baseus Amblight 65W 30000mAh', price:'0', cat:'powerbanks', badge:'⭐ #8 Топ', desc:'Заряджає ноутбук з ємністю 30000mAh | 65W USB-C PD | Підсвічування статусу заряду | Преміум вибір', img:'https://www.baseus.com/cdn/shop/files/PPLG000101-1.jpg'},
-  {id:10, name:'Baseus Adaman 2 20000mAh 65W', price:'0', cat:'powerbanks', badge:'⭐ #10 Топ', desc:'Нове покоління з покращеним контролером | 65W для ноутбуків | 3 пристрої одночасно | Захист від подряпин', img:'https://www.baseus.com/cdn/shop/files/PPIMDA-B01-1.jpg'},
-  {id:11, name:'Baseus Bipow 2 Pro 30000mAh 22.5W', price:'0', cat:'powerbanks', badge:'🔥 #11', desc:'Вбудований USB-C кабель | 22.5W швидка зарядка | Цифровий дисплей | Заряджає без пошуку кабелю', img:'https://www.baseus.com/cdn/shop/files/E0028100-1.jpg'},
-  {id:12, name:'Xiaomi Mi Power Bank 3 30000mAh', price:'0', cat:'powerbanks', badge:'🔥 #12', desc:'Великий запас на 30000mAh від Xiaomi | USB-C 18W | Два USB-A | Надійний вибір для тривалих подорожей', img:'https://i02.appmifile.com/mi-com-product/fly-birds/mi-power-bank-3-30000/M/4a8d5e6f7c2b1a9e3d4f5c6b7a8e9d0c.png'},
-  {id:13, name:'Hoco J86A 50000mAh 22.5W', price:'0', cat:'powerbanks', badge:'💪 #13', desc:'Гігантська ємність 50000mAh | LED ліхтарик | 22.5W + PD20W | Для тривалих відключень світла', img:'https://hocotech.com/wp-content/uploads/2024/03/hoco-j86a-led-powermaster-fully-compatible-power-bank-50000mah.jpg'},
-  {id:14, name:'Baseus Airpow 20000mAh 20W', price:'0', cat:'powerbanks', badge:'💪 #14', desc:'Ультракомпактний для 20000mAh | 20W Fast Charge | Легкий та тонкий корпус | Стильний матовий дизайн', img:'https://www.baseus.com/cdn/shop/files/P10022804113-00-1.jpg'},
-  {id:15, name:'Romoss PMT40 65W 40000mAh', price:'0', cat:'powerbanks', badge:'💪 #15', desc:'65W для ноутбуків + 40000mAh | Три виходи | Реальна ємність понад 25000mAh | Підходить для MacBook', img:'https://www.romoss.com/uploads/product/20231201/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8.jpg'},
-  {id:16, name:'Hoco DB81 Apollo 30000mAh 65W', price:'0', cat:'powerbanks', badge:'💡 #16', desc:'6 портів одночасно (4×USB-A + 2×Type-C) | 65W | LED ліхтарик | Дисплей | Для всієї родини', img:'https://hocotech.com/wp-content/uploads/2024/06/hoco-db81-apollo-65w-power-bank-30000mah.jpg'},
-  {id:17, name:'Anker PowerCore III Elite 25600mAh 87W', price:'0', cat:'powerbanks', badge:'👑 #17', desc:'Преміум клас від Anker | 87W для ноутбуків | Сертифікована якість | Підходить для MacBook Pro та Dell', img:'https://m.media-amazon.com/images/I/61ixBFTcfAL._AC_SL1500_.jpg'},
-  {id:18, name:'Baseus Blade 20000mAh 100W', price:'0', cat:'powerbanks', badge:'👑 #18', desc:'Ультратонкий 15мм корпус | 100W — заряджає будь-який ноутбук | Dual USB-C | Преміум алюміній', img:'https://www.baseus.com/cdn/shop/files/PPBJ040101-1.jpg'},
-  {id:19, name:'Xiaomi Cuktech PB200N 20000mAh 55W', price:'0', cat:'powerbanks', badge:'🆕 #19', desc:'Новинка від Xiaomi | 55W швидка зарядка | Type-C вбудований кабель | Ультракомпактний для 20000mAh', img:'https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-cuktech-power-bank-20000/M/8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e.png'},
-  {id:20, name:'Hoco J123B 30000mAh з ліхтарем', price:'0', cat:'powerbanks', badge:'🔦 #20', desc:'30000mAh + яскравий LED ліхтарик | 22.5W + PD20W | 3×USB + Type-C + Lightning | Ідеальний для блекаутів', img:'https://hocotech.com/wp-content/uploads/2024/04/hoco-j123b-element-power-bank-30000mah.jpg'},
-  {id:21, name:'Baseus Magnetic Mini MagSafe 5000mAh', price:'0', cat:'powerbanks', badge:'🧲 #21', desc:'Магнітне кріплення MagSafe для iPhone | 20W бездротова зарядка | Ультракомпактний | Стиль та зручність', img:'https://www.baseus.com/cdn/shop/files/PPCX060001-1.jpg'},
-  {id:22, name:'Xiaomi Ultra Slim 5000mAh 18W', price:'0', cat:'powerbanks', badge:'🪶 #22', desc:'Найлегший у класі — лише 95г | 18W швидка зарядка | USB-C порт | Поміщається в будь-яку кишеню', img:'https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-power-bank-5000/M/5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d.png'},
-  {id:23, name:'Ugreen PB720 20000mAh 65W', price:'0', cat:'powerbanks', badge:'🔌 #23', desc:'65W для ноутбуків від Ugreen | Dual USB-C PD | Digital дисплей | Ідеальний для студентів і фрілансерів', img:'https://m.media-amazon.com/images/I/61b2yZiCfUL._AC_SL1500_.jpg'},
-  {id:24, name:'Hoco J144A 30000mAh + 2 кабелі', price:'0', cat:'powerbanks', badge:'🎁 #24', desc:'В комплекті 2 кабелі — нічого не потрібно докупати | 30000mAh | 22.5W | Для роутера та смартфона', img:'https://hocotech.com/wp-content/uploads/2024/07/hoco-j144a-power-bank-30000mah.jpg'},
-  {id:25, name:'Samsung EB-P4520 10000mAh', price:'0', cat:'powerbanks', badge:'📱 #25', desc:'Офіційний павербанк від Samsung | Бездротова зарядка Qi | Fast Charge | Ідеально для Galaxy-серії', img:'https://image-us.samsung.com/SamsungUS/home/mobile/galaxy-accessories/mobile-power/02092023/EB-P4520XJEGUS_001_Front_Gray.jpg'},
-  {id:26, name:'Baseus EnerFill MagSafe 10000mAh', price:'0', cat:'powerbanks', badge:'🧲 #26', desc:'MagSafe 15W + Qi | Вбудований USB-C кабель | Компактний для щоденного носіння | iPhone 12/13/14/15/16', img:'https://www.baseus.com/cdn/shop/files/P1008210E123-00-1.jpg'},
-  {id:27, name:'Hoco J146B 30000mAh + вбудовані кабелі', price:'0', cat:'powerbanks', badge:'🔗 #27', desc:'3 вбудовані кабелі (USB-A, Type-C, Lightning) | 30000mAh | Не потрібно шукати кабель | Все в одному', img:'https://hocotech.com/wp-content/uploads/2024/08/hoco-j146b-power-bank-30000mah.jpg'},
-  {id:28, name:'Romoss Sense 6+ 20000mAh', price:'0', cat:'powerbanks', badge:'💲 #28', desc:'Найкращий бюджетний вибір | 20000mAh за мінімальну ціну | 18W Fast Charge | Перевірений роками', img:'https://www.romoss.com/uploads/product/20220801/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6.jpg'},
-  {id:29, name:'Hoco J152 Pro 80000mAh 65W', price:'0', cat:'powerbanks', badge:'⚡ #29', desc:'Рекордна ємність 80000mAh | 65W для ноутбуків | 4×USB-A + 2×Type-C | LED ліхтарик | Для тривалих відключень', img:'https://hocotech.com/wp-content/uploads/2024/09/hoco-j152-pro-power-bank-80000mah.jpg'},
-  {id:30, name:'Baseus Bipow 2 20000mAh 20W', price:'0', cat:'powerbanks', badge:'✅ #30', desc:'Вбудований кабель Type-C | 20000mAh | 20W зарядка | Компактний та легкий для великої ємності', img:'https://www.baseus.com/cdn/shop/files/P10077101113-01-1.jpg'},
-  {id:31, name:'Hoco J108B 30000mAh 22.5W', price:'0', cat:'powerbanks', badge:'✅ #31', desc:'30000mAh зі швидкою зарядкою | QC3.0 + PD3.0 | 2×USB-A + Type-C | Чорний стильний корпус', img:'https://hocotech.com/wp-content/uploads/2024/05/hoco-j108b-powerbank-30000mah.jpg'},
-  {id:32, name:'Qinetiq Phoenix RQ-30 30000mAh', price:'0', cat:'powerbanks', badge:'🇺🇦 #32', desc:'Українська марка Qinetiq | 30000mAh | LED дисплей | PD/QC зарядка | Кабель Type-C в комплекті', img:'https://rozetka.com.ua/u_img/products/01/549/549129762/big/549129762.jpg'},
-  {id:33, name:'Hoco DB33 Plus Solar 30000mAh', price:'0', cat:'powerbanks', badge:'☀️ #33', desc:'Сонячна панель для зарядки на природі | 30000mAh | 22.5W + PD20W | Ідеальний для походів та виїздів', img:'https://hocotech.com/wp-content/uploads/2024/06/hoco-db33-plus-rising-power-bank-solar-30000mah.jpg'},
-  {id:34, name:'Xiaomi 10000mAh 33W + кабель', price:'0', cat:'powerbanks', badge:'🔗 #34', desc:'Вбудований USB-C кабель | 33W Fast Charge | 10000mAh | Не потрібен окремий кабель — зручність на максимумі', img:'https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-power-bank-10000-pro/M/2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d.png'},
-  {id:35, name:'Baseus Adaman 24000mAh 140W', price:'0', cat:'powerbanks', badge:'👑 #35', desc:'140W — найшвидша зарядка ноутбука | 24000mAh | Dual USB-C | Для геймерів і дизайнерів з потужними ноутбуками', img:'https://www.baseus.com/cdn/shop/files/P10021508113-00-1.jpg'},
-  {id:36, name:'Hoco J165B 30000mAh 2A', price:'0', cat:'powerbanks', badge:'💲 #36', desc:'Економічний вибір на 30000mAh | 2A зарядка | 2×USB-A + Type-C | Надійний для щоденного використання', img:'https://hocotech.com/wp-content/uploads/2024/10/hoco-j165b-power-bank-30000mah.jpg'},
-  {id:37, name:'Romoss Solo 20000mAh', price:'0', cat:'powerbanks', badge:'💲 #37', desc:'Бюджетний хіт Romoss | 20000mAh | Стандартна зарядка | Мінімалістичний дизайн | Оптимально для ціни', img:'https://www.romoss.com/uploads/product/20230101/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7.jpg'},
-  {id:38, name:'Hoco J132B 30000mAh + кабелі', price:'0', cat:'powerbanks', badge:'🔗 #38', desc:'2 вбудовані кабелі Type-C + Lightning | 30000mAh | 22.5W + PD20W | Для iPhone та Android в одному', img:'https://hocotech.com/wp-content/uploads/2024/07/hoco-j132b-sabio-power-bank-30000mah.jpg'},
-  {id:39, name:'Energizer 30000mAh PD20W+QC22.5W', price:'0', cat:'powerbanks', badge:'🔋 #39', desc:'Бренд Energizer — 80+ років у сфері живлення | 30000mAh | PD20W + QC22.5W | Максимальна надійність', img:'https://m.media-amazon.com/images/I/61vT8wVwpKL._AC_SL1500_.jpg'},
-  {id:40, name:'Hoco DB81A Apollo 50000mAh 65W', price:'0', cat:'powerbanks', badge:'⚡ #40', desc:'65W для ноутбуків з ємністю 50000mAh | 4×USB-A + 2×Type-C | LED ліхтарик | Дисплей | Станція живлення', img:'https://hocotech.com/wp-content/uploads/2024/06/hoco-db81a-apollo-power-bank-50000mah-65w.jpg'},
+  {id:1, name:'Hoco J136B Sirui 30000mAh', price:'0', cat:'powerbanks', badge:'🏆 #9 Топ', desc:'Швидка зарядка 22.5W + PD20W | 2×USB-A, Type-C, microUSB | Розумний LED-дисплей | Заряджає смартфон до 7 разів', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2025/06/hoco-j136b-sirui-22-5w-pd20w-power-bank-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:2, name:'Baseus Bipow Digital Display 10000mAh', price:'0', cat:'powerbanks', badge:'🥇 #1 Топ', desc:'Компактний чемпіон продажів | 20W швидка зарядка | Цифровий дисплей заряду | Ультратонкий — поміщається в кишеню', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/PPDML-M01-1.jpg&w=400&output=jpg&q=85'},
+  {id:3, name:'Xiaomi Mi Power Bank 3 10000mAh', price:'0', cat:'powerbanks', badge:'🥈 #2 Топ', desc:'Легендарна надійність Xiaomi | USB-C 18W швидка зарядка | Алюмінієвий корпус | Ідеальний для щоденного носіння', img:'https://wsrv.nl/?url=i02.appmifile.com/mi-com-product/fly-birds/xiaomi-33w-power-bank-10000-pro/M/2bd8e12cf1b34b8e.png&w=400&output=jpg&q=85'},
+  {id:4, name:'Baseus Adaman Metal 20000mAh 65W', price:'0', cat:'powerbanks', badge:'🥉 #3 Топ', desc:'Заряджає ноутбук та 3 гаджети одночасно | 65W PD для ноутбуків | Металевий корпус | Digital LED дисплей', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/PPIMDA-A01-1.jpg&w=400&output=jpg&q=85'},
+  {id:5, name:'Hoco J101B Astute 30000mAh 22.5W', price:'0', cat:'powerbanks', badge:'🏅 #4 Топ', desc:'Потужна ємність 30000mAh | Швидка зарядка 22.5W + PD20W | 2×USB-A + Type-C | Захист від перегріву та перезарядки', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/05/hoco-j101b-astute-fully-compatible-power-bank-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:6, name:'Baseus Star Lord 30000mAh 22.5W', price:'0', cat:'powerbanks', badge:'🏅 #5 Топ', desc:'Стильний дизайн із LED-дисплеєм | 22.5W швидка зарядка | 3 порти одночасно | Захист від коротких замикань', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/PPXJ080101-1.jpg&w=400&output=jpg&q=85'},
+  {id:7, name:'Xiaomi Mi Power Bank 3 20000mAh', price:'0', cat:'powerbanks', badge:'🏅 #6 Топ', desc:'Золота середина між ємністю та вагою | USB-C 18W Fast Charge | Два USB-A порти | Мінімалістичний стиль', img:'https://wsrv.nl/?url=i02.appmifile.com/mi-com-product/fly-birds/xiaomi-power-bank-3-18w/M/19219d74ce84cf73.png&w=400&output=jpg&q=85'},
+  {id:8, name:'Romoss Sense 8+ 30000mAh', price:'0', cat:'powerbanks', badge:'🏅 #7 Топ', desc:'Реальна ємність без обману | PD + QC 3.0 швидка зарядка | 3 виходи одночасно | Ідеальний для подорожей', img:'https://wsrv.nl/?url=www.romoss.com/uploads/product/20230601/b2af9a2c4e6f1c9e3af1c9d2b7e5a8f3.jpg&w=400&output=jpg&q=85'},
+  {id:9, name:'Baseus Amblight 65W 30000mAh', price:'0', cat:'powerbanks', badge:'⭐ #8 Топ', desc:'Заряджає ноутбук з ємністю 30000mAh | 65W USB-C PD | Підсвічування статусу заряду | Преміум вибір', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/PPLG000101-1.jpg&w=400&output=jpg&q=85'},
+  {id:10, name:'Baseus Adaman 2 20000mAh 65W', price:'0', cat:'powerbanks', badge:'⭐ #10 Топ', desc:'Нове покоління з покращеним контролером | 65W для ноутбуків | 3 пристрої одночасно | Захист від подряпин', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/PPIMDA-B01-1.jpg&w=400&output=jpg&q=85'},
+  {id:11, name:'Baseus Bipow 2 Pro 30000mAh 22.5W', price:'0', cat:'powerbanks', badge:'🔥 #11', desc:'Вбудований USB-C кабель | 22.5W швидка зарядка | Цифровий дисплей | Заряджає без пошуку кабелю', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/E0028100-1.jpg&w=400&output=jpg&q=85'},
+  {id:12, name:'Xiaomi Mi Power Bank 3 30000mAh', price:'0', cat:'powerbanks', badge:'🔥 #12', desc:'Великий запас на 30000mAh від Xiaomi | USB-C 18W | Два USB-A | Надійний вибір для тривалих подорожей', img:'https://wsrv.nl/?url=i02.appmifile.com/mi-com-product/fly-birds/mi-power-bank-3-30000/M/4a8d5e6f7c2b1a9e3d4f5c6b7a8e9d0c.png&w=400&output=jpg&q=85'},
+  {id:13, name:'Hoco J86A 50000mAh 22.5W', price:'0', cat:'powerbanks', badge:'💪 #13', desc:'Гігантська ємність 50000mAh | LED ліхтарик | 22.5W + PD20W | Для тривалих відключень світла', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/03/hoco-j86a-led-powermaster-fully-compatible-power-bank-50000mah.jpg&w=400&output=jpg&q=85'},
+  {id:14, name:'Baseus Airpow 20000mAh 20W', price:'0', cat:'powerbanks', badge:'💪 #14', desc:'Ультракомпактний для 20000mAh | 20W Fast Charge | Легкий та тонкий корпус | Стильний матовий дизайн', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/P10022804113-00-1.jpg&w=400&output=jpg&q=85'},
+  {id:15, name:'Romoss PMT40 65W 40000mAh', price:'0', cat:'powerbanks', badge:'💪 #15', desc:'65W для ноутбуків + 40000mAh | Три виходи | Реальна ємність понад 25000mAh | Підходить для MacBook', img:'https://wsrv.nl/?url=www.romoss.com/uploads/product/20231201/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8.jpg&w=400&output=jpg&q=85'},
+  {id:16, name:'Hoco DB81 Apollo 30000mAh 65W', price:'0', cat:'powerbanks', badge:'💡 #16', desc:'6 портів одночасно (4×USB-A + 2×Type-C) | 65W | LED ліхтарик | Дисплей | Для всієї родини', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/06/hoco-db81-apollo-65w-power-bank-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:17, name:'Anker PowerCore III Elite 25600mAh 87W', price:'0', cat:'powerbanks', badge:'👑 #17', desc:'Преміум клас від Anker | 87W для ноутбуків | Сертифікована якість | Підходить для MacBook Pro та Dell', img:'https://wsrv.nl/?url=m.media-amazon.com/images/I/61ixBFTcfAL._AC_SL1500_.jpg&w=400&output=jpg&q=85'},
+  {id:18, name:'Baseus Blade 20000mAh 100W', price:'0', cat:'powerbanks', badge:'👑 #18', desc:'Ультратонкий 15мм корпус | 100W — заряджає будь-який ноутбук | Dual USB-C | Преміум алюміній', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/PPBJ040101-1.jpg&w=400&output=jpg&q=85'},
+  {id:19, name:'Xiaomi Cuktech PB200N 20000mAh 55W', price:'0', cat:'powerbanks', badge:'🆕 #19', desc:'Новинка від Xiaomi | 55W швидка зарядка | Type-C вбудований кабель | Ультракомпактний для 20000mAh', img:'https://wsrv.nl/?url=i02.appmifile.com/mi-com-product/fly-birds/xiaomi-cuktech-power-bank-20000/M/8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e.png&w=400&output=jpg&q=85'},
+  {id:20, name:'Hoco J123B 30000mAh з ліхтарем', price:'0', cat:'powerbanks', badge:'🔦 #20', desc:'30000mAh + яскравий LED ліхтарик | 22.5W + PD20W | 3×USB + Type-C + Lightning | Ідеальний для блекаутів', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/04/hoco-j123b-element-power-bank-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:21, name:'Baseus Magnetic Mini MagSafe 5000mAh', price:'0', cat:'powerbanks', badge:'🧲 #21', desc:'Магнітне кріплення MagSafe для iPhone | 20W бездротова зарядка | Ультракомпактний | Стиль та зручність', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/PPCX060001-1.jpg&w=400&output=jpg&q=85'},
+  {id:22, name:'Xiaomi Ultra Slim 5000mAh 18W', price:'0', cat:'powerbanks', badge:'🪶 #22', desc:'Найлегший у класі — лише 95г | 18W швидка зарядка | USB-C порт | Поміщається в будь-яку кишеню', img:'https://wsrv.nl/?url=i02.appmifile.com/mi-com-product/fly-birds/xiaomi-power-bank-5000/M/5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d.png&w=400&output=jpg&q=85'},
+  {id:23, name:'Ugreen PB720 20000mAh 65W', price:'0', cat:'powerbanks', badge:'🔌 #23', desc:'65W для ноутбуків від Ugreen | Dual USB-C PD | Digital дисплей | Ідеальний для студентів і фрілансерів', img:'https://wsrv.nl/?url=m.media-amazon.com/images/I/61b2yZiCfUL._AC_SL1500_.jpg&w=400&output=jpg&q=85'},
+  {id:24, name:'Hoco J144A 30000mAh + 2 кабелі', price:'0', cat:'powerbanks', badge:'🎁 #24', desc:'В комплекті 2 кабелі — нічого не потрібно докупати | 30000mAh | 22.5W | Для роутера та смартфона', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/07/hoco-j144a-power-bank-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:25, name:'Samsung EB-P4520 10000mAh', price:'0', cat:'powerbanks', badge:'📱 #25', desc:'Офіційний павербанк від Samsung | Бездротова зарядка Qi | Fast Charge | Ідеально для Galaxy-серії', img:'https://wsrv.nl/?url=image-us.samsung.com/SamsungUS/home/mobile/galaxy-accessories/mobile-power/02092023/EB-P4520XJEGUS_001_Front_Gray.jpg&w=400&output=jpg&q=85'},
+  {id:26, name:'Baseus EnerFill MagSafe 10000mAh', price:'0', cat:'powerbanks', badge:'🧲 #26', desc:'MagSafe 15W + Qi | Вбудований USB-C кабель | Компактний для щоденного носіння | iPhone 12/13/14/15/16', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/P1008210E123-00-1.jpg&w=400&output=jpg&q=85'},
+  {id:27, name:'Hoco J146B 30000mAh + вбудовані кабелі', price:'0', cat:'powerbanks', badge:'🔗 #27', desc:'3 вбудовані кабелі (USB-A, Type-C, Lightning) | 30000mAh | Не потрібно шукати кабель | Все в одному', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/08/hoco-j146b-power-bank-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:28, name:'Romoss Sense 6+ 20000mAh', price:'0', cat:'powerbanks', badge:'💲 #28', desc:'Найкращий бюджетний вибір | 20000mAh за мінімальну ціну | 18W Fast Charge | Перевірений роками', img:'https://wsrv.nl/?url=www.romoss.com/uploads/product/20220801/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6.jpg&w=400&output=jpg&q=85'},
+  {id:29, name:'Hoco J152 Pro 80000mAh 65W', price:'0', cat:'powerbanks', badge:'⚡ #29', desc:'Рекордна ємність 80000mAh | 65W для ноутбуків | 4×USB-A + 2×Type-C | LED ліхтарик | Для тривалих відключень', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/09/hoco-j152-pro-power-bank-80000mah.jpg&w=400&output=jpg&q=85'},
+  {id:30, name:'Baseus Bipow 2 20000mAh 20W', price:'0', cat:'powerbanks', badge:'✅ #30', desc:'Вбудований кабель Type-C | 20000mAh | 20W зарядка | Компактний та легкий для великої ємності', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/P10077101113-01-1.jpg&w=400&output=jpg&q=85'},
+  {id:31, name:'Hoco J108B 30000mAh 22.5W', price:'0', cat:'powerbanks', badge:'✅ #31', desc:'30000mAh зі швидкою зарядкою | QC3.0 + PD3.0 | 2×USB-A + Type-C | Чорний стильний корпус', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/05/hoco-j108b-powerbank-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:32, name:'Qinetiq Phoenix RQ-30 30000mAh', price:'0', cat:'powerbanks', badge:'🇺🇦 #32', desc:'Українська марка Qinetiq | 30000mAh | LED дисплей | PD/QC зарядка | Кабель Type-C в комплекті', img:'https://wsrv.nl/?url=rozetka.com.ua/u_img/products/01/549/549129762/big/549129762.jpg&w=400&output=jpg&q=85'},
+  {id:33, name:'Hoco DB33 Plus Solar 30000mAh', price:'0', cat:'powerbanks', badge:'☀️ #33', desc:'Сонячна панель для зарядки на природі | 30000mAh | 22.5W + PD20W | Ідеальний для походів та виїздів', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/06/hoco-db33-plus-rising-power-bank-solar-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:34, name:'Xiaomi 10000mAh 33W + кабель', price:'0', cat:'powerbanks', badge:'🔗 #34', desc:'Вбудований USB-C кабель | 33W Fast Charge | 10000mAh | Не потрібен окремий кабель — зручність на максимумі', img:'https://wsrv.nl/?url=i02.appmifile.com/mi-com-product/fly-birds/xiaomi-power-bank-10000-pro/M/2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d.png&w=400&output=jpg&q=85'},
+  {id:35, name:'Baseus Adaman 24000mAh 140W', price:'0', cat:'powerbanks', badge:'👑 #35', desc:'140W — найшвидша зарядка ноутбука | 24000mAh | Dual USB-C | Для геймерів і дизайнерів з потужними ноутбуками', img:'https://wsrv.nl/?url=www.baseus.com/cdn/shop/files/P10021508113-00-1.jpg&w=400&output=jpg&q=85'},
+  {id:36, name:'Hoco J165B 30000mAh 2A', price:'0', cat:'powerbanks', badge:'💲 #36', desc:'Економічний вибір на 30000mAh | 2A зарядка | 2×USB-A + Type-C | Надійний для щоденного використання', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/10/hoco-j165b-power-bank-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:37, name:'Romoss Solo 20000mAh', price:'0', cat:'powerbanks', badge:'💲 #37', desc:'Бюджетний хіт Romoss | 20000mAh | Стандартна зарядка | Мінімалістичний дизайн | Оптимально для ціни', img:'https://wsrv.nl/?url=www.romoss.com/uploads/product/20230101/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7.jpg&w=400&output=jpg&q=85'},
+  {id:38, name:'Hoco J132B 30000mAh + кабелі', price:'0', cat:'powerbanks', badge:'🔗 #38', desc:'2 вбудовані кабелі Type-C + Lightning | 30000mAh | 22.5W + PD20W | Для iPhone та Android в одному', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/07/hoco-j132b-sabio-power-bank-30000mah.jpg&w=400&output=jpg&q=85'},
+  {id:39, name:'Energizer 30000mAh PD20W+QC22.5W', price:'0', cat:'powerbanks', badge:'🔋 #39', desc:'Бренд Energizer — 80+ років у сфері живлення | 30000mAh | PD20W + QC22.5W | Максимальна надійність', img:'https://wsrv.nl/?url=m.media-amazon.com/images/I/61vT8wVwpKL._AC_SL1500_.jpg&w=400&output=jpg&q=85'},
+  {id:40, name:'Hoco DB81A Apollo 50000mAh 65W', price:'0', cat:'powerbanks', badge:'⚡ #40', desc:'65W для ноутбуків з ємністю 50000mAh | 4×USB-A + 2×Type-C | LED ліхтарик | Дисплей | Станція живлення', img:'https://wsrv.nl/?url=hocotech.com/wp-content/uploads/2024/06/hoco-db81a-apollo-power-bank-50000mah-65w.jpg&w=400&output=jpg&q=85'},
   // ====== ІНШІ ТОВАРИ ======
   {id:41, name:'Навушники бездротові', price:'2190', cat:'headphones', badge:'', desc:'Bluetooth 5.0 | 30 год роботи | Шумопоглинання', img:''},
   {id:42, name:'Авто-реєстратор HD', price:'1490', cat:'auto', badge:'-15%', desc:'Full HD 1080p | Кут огляду 170 | Нічний режим', img:''},
@@ -912,12 +1021,12 @@ function cartTotal(){ return cart.reduce(function(s,i){return s+(Number(i.price)
 
 function svgIcon(type){
   var icons = {
-    powerbanks:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>',
-    headphones:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>',
-    auto:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
-    accessories:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
-    wireless:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>',
-    smarthome:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+    powerbanks:'<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#7C3AED"/><stop offset="100%" style="stop-color:#EC4899"/></linearGradient></defs><rect x="10" y="30" width="88" height="52" rx="10" fill="#F3F0FF" stroke="url(#pg)" stroke-width="2.5"/><rect x="98" y="46" width="10" height="20" rx="4" fill="url(#pg)"/><rect x="18" y="48" width="14" height="16" rx="3" fill="url(#pg)" opacity="0.9"/><rect x="36" y="48" width="14" height="16" rx="3" fill="url(#pg)" opacity="0.6"/><rect x="54" y="48" width="14" height="16" rx="3" fill="url(#pg)" opacity="0.3"/><rect x="72" y="48" width="14" height="16" rx="3" fill="#E5E0FF" opacity="0.5"/><circle cx="22" cy="82" r="3" fill="url(#pg)"/><circle cx="32" cy="82" r="2" fill="url(#pg)" opacity="0.5"/></svg>',
+    headphones:'<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#7C3AED"/><stop offset="100%" style="stop-color:#EC4899"/></linearGradient></defs><path d="M60 25 C35 25 18 42 18 65" fill="none" stroke="url(#hg)" stroke-width="5" stroke-linecap="round"/><path d="M60 25 C85 25 102 42 102 65" fill="none" stroke="url(#hg)" stroke-width="5" stroke-linecap="round"/><rect x="10" y="60" width="18" height="28" rx="9" fill="url(#hg)"/><rect x="92" y="60" width="18" height="28" rx="9" fill="url(#hg)"/><rect x="13" y="65" width="12" height="18" rx="6" fill="#F3F0FF" opacity="0.5"/><rect x="95" y="65" width="12" height="18" rx="6" fill="#F3F0FF" opacity="0.5"/></svg>',
+    auto:'<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#7C3AED"/><stop offset="100%" style="stop-color:#EC4899"/></linearGradient></defs><rect x="8" y="35" width="72" height="44" rx="6" fill="#F3F0FF" stroke="url(#ag)" stroke-width="2"/><path d="M80 50 L100 50 L110 65 L110 79 L80 79 Z" fill="#F3F0FF" stroke="url(#ag)" stroke-width="2"/><rect x="16" y="42" width="28" height="18" rx="3" fill="url(#ag)" opacity="0.3"/><rect x="50" y="42" width="20" height="18" rx="3" fill="url(#ag)" opacity="0.3"/><circle cx="28" cy="88" r="10" fill="url(#ag)"/><circle cx="28" cy="88" r="5" fill="#F3F0FF"/><circle cx="90" cy="88" r="10" fill="url(#ag)"/><circle cx="90" cy="88" r="5" fill="#F3F0FF"/></svg>',
+    accessories:'<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="acg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#7C3AED"/><stop offset="100%" style="stop-color:#EC4899"/></linearGradient></defs><rect x="25" y="15" width="70" height="90" rx="12" fill="#F3F0FF" stroke="url(#acg)" stroke-width="2.5"/><rect x="35" y="10" width="50" height="14" rx="7" fill="url(#acg)" opacity="0.3"/><rect x="33" y="35" width="54" height="8" rx="4" fill="url(#acg)" opacity="0.4"/><rect x="33" y="50" width="54" height="8" rx="4" fill="url(#acg)" opacity="0.3"/><rect x="33" y="65" width="54" height="8" rx="4" fill="url(#acg)" opacity="0.2"/><circle cx="57" cy="89" r="6" fill="url(#acg)"/></svg>',
+    wireless:'<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#7C3AED"/><stop offset="100%" style="stop-color:#EC4899"/></linearGradient></defs><path d="M60 95 L60 96" stroke="url(#wg)" stroke-width="8" stroke-linecap="round"/><path d="M42 78 Q60 62 78 78" fill="none" stroke="url(#wg)" stroke-width="5" stroke-linecap="round"/><path d="M28 64 Q60 38 92 64" fill="none" stroke="url(#wg)" stroke-width="5" stroke-linecap="round" opacity="0.7"/><path d="M14 50 Q60 14 106 50" fill="none" stroke="url(#wg)" stroke-width="5" stroke-linecap="round" opacity="0.4"/><rect x="20" y="25" width="80" height="55" rx="8" fill="#F3F0FF" stroke="url(#wg)" stroke-width="2"/><path d="M35 42 Q60 28 85 42" fill="none" stroke="url(#wg)" stroke-width="3" opacity="0.5"/></svg>',
+    smarthome:'<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#7C3AED"/><stop offset="100%" style="stop-color:#EC4899"/></linearGradient></defs><polygon points="60,15 10,55 20,55 20,105 100,105 100,55 110,55" fill="#F3F0FF" stroke="url(#sg)" stroke-width="2.5" stroke-linejoin="round"/><rect x="45" y="70" width="30" height="35" rx="4" fill="url(#sg)" opacity="0.3"/><circle cx="60" cy="50" r="12" fill="url(#sg)" opacity="0.2" stroke="url(#sg)" stroke-width="2"/><path d="M55 50 L58 53 L65 46" fill="none" stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round"/></svg>',
   };
   return icons[type] || icons['powerbanks'];
 }
@@ -929,9 +1038,11 @@ function updateBadges(){
   var t = cart.reduce(function(s,i){return s+i.qty;},0);
   var b = document.getElementById('cartBadge');
   var cb = document.getElementById('catCartBadge');
+  var pb = document.getElementById('prodCartBadge');
   var sc = document.getElementById('sideCartCount');
   b.style.display = t>0?'flex':'none'; b.textContent = t;
   if(cb){ cb.style.display = t>0?'flex':'none'; cb.style.alignItems='center'; cb.style.justifyContent='center'; cb.textContent = t; }
+  if(pb){ pb.style.display = t>0?'flex':'none'; pb.style.alignItems='center'; pb.style.justifyContent='center'; pb.textContent = t; }
   if(sc) sc.textContent = t>0?(t+' товар'+(t===1?'':'ів')):'';
 }
 
@@ -1006,10 +1117,10 @@ function makeCard(p, view){
 
   if(view==='list'){
     return '<div class="prod-card list-view">'
-      +'<div class="prod-img">'+badgeHtml+imgHtml+'</div>'
+      +'<div class="prod-img" onclick="openProdPage('+p.id+')" style="cursor:pointer;">'+badgeHtml+imgHtml+'</div>'
       +'<div class="prod-body">'
       +'<div class="prod-info">'
-      +'<div class="prod-name">'+p.name+'</div>'
+      +'<div class="prod-name" onclick="openProdPage('+p.id+')" style="cursor:pointer;">'+p.name+'</div>'
       +'<div class="prod-desc">'+p.desc+'</div>'
       +'</div>'
       +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">'
@@ -1023,9 +1134,9 @@ function makeCard(p, view){
       +'</div></div></div>';
   }
   return '<div class="prod-card">'
-    +'<div class="prod-img">'+badgeHtml+imgHtml+'</div>'
+    +'<div class="prod-img" onclick="openProdPage('+p.id+')" style="cursor:pointer;">'+badgeHtml+imgHtml+'</div>'
     +'<div class="prod-body">'
-    +'<div class="prod-name">'+p.name+'</div>'
+    +'<div class="prod-name" onclick="openProdPage('+p.id+')" style="cursor:pointer;">'+p.name+'</div>'
     +'<div class="prod-cat">'+(CATEGORY_NAMES[p.cat]||p.cat)+'</div>'
     +'<div class="prod-desc">'+p.desc+'</div>'
     +'<div class="prod-foot">'
@@ -1291,6 +1402,119 @@ function sendBot(){
   callClaudeAPI(txt);
 }
 
+
+// ========== PRODUCT PAGE ==========
+var currentProdId = null;
+
+var PROD_DETAILS = {
+  1:{features:[['⚡','Потужність','22.5W QC + PD20W — заряджає iPhone за ~1.5 год'],['🔌','Порти','2×USB-A, 1×Type-C, 1×microUSB — 3 пристрої одночасно'],['📊','Ємність','30000mAh — до 7 зарядок смартфона'],['💡','Дисплей','LED-індикатор точного рівня заряду'],['🛡️','Захист','Від перегріву, перезарядки, короткого замикання'],['⚖️','Вага','~580г — зручно в рюкзак']],full:'Hoco J136B Sirui — один з найпопулярніших павербанків на українському ринку. Завдяки ємності 30000mAh він здатен зарядити смартфон до 7 разів поспіль без підзарядки. Технологія 22.5W скорочує час зарядки в 3 рази порівняно зі стандартними 5W. Підтримує одночасну зарядку 3 пристроїв через різні порти. Корпус з вогнетривкого ABS+PC захищає від пошкоджень. Незамінний під час відключень електроенергії.'},
+  2:{features:[['⚡','Потужність','20W PD + QC 3.0 — швидка зарядка всіх пристроїв'],['📱','Компактність','Ультратонкий 16.9мм — поміщається в кишеню'],['📊','Ємність','10000mAh — до 2.5 зарядок смартфона'],['💡','Дисплей','Цифровий екран точного % заряду'],['🔌','Порти','2×USB-A + 1×Type-C'],['⚖️','Вага','229г — майже не відчувається']],full:'Baseus Bipow Digital Display — абсолютний лідер продажів серед компактних павербанків. Завдяки товщині лише 16.9мм він легко поміщається в кишеню. Цифровий дисплей показує точний відсоток заряду. Підтримує швидку зарядку 20W PD та QC 3.0 для більшості сучасних смартфонів. Ідеальний супутник у щоденному житті.'},
+  3:{features:[['⚡','Потужність','18W Fast Charge USB-C'],['🏗️','Корпус','Алюмінієвий — міцний і стильний'],['📊','Ємність','10000mAh'],['🔌','Порти','1×USB-A + 1×USB-C'],['⚖️','Вага','223г'],['✈️','Авіа','Дозволений на борт літака']],full:'Xiaomi Mi Power Bank 3 — еталон надійності та якості за розумну ціну. Алюмінієвий корпус захищає від пошкоджень і надає преміальний вигляд. Xiaomi використовує якісні літій-полімерні елементи що зберігають 80% ємності після 500 циклів. Мінімалістичний дизайн підходить до будь-якого стилю.'},
+  4:{features:[['⚡','Потужність','65W PD — заряджає ноутбуки'],['💻','Ноутбуки','MacBook Air/Pro, Dell XPS, Lenovo'],['📊','Ємність','20000mAh'],['💡','Дисплей','Digital LED дисплей'],['🔌','Порти','2×USB-A + 1×USB-C'],['🏗️','Корпус','Металевий Anti-scratch']],full:'Baseus Adaman Metal — павербанк для тих хто використовує ноутбук далеко від розетки. 65W потужність по USB-C PD дозволяє заряджати MacBook Air, Dell XPS та більшість ультрабуків. Металевий корпус з покриттям Anti-scratch не тільки міцний але й виглядає преміально. Один з найкращих виборів для фрілансерів та мандрівників.'},
+  5:{features:[['⚡','Потужність','22.5W + PD20W'],['📊','Ємність','30000mAh — 7+ зарядок'],['🔌','Порти','2×USB-A + Type-C'],['🛡️','Захист','MCU контроль температури та струму'],['💡','Індикатор','LED рівень заряду'],['⚖️','Вага','~570г']],full:'Hoco J101B Astute — перевірений хіт від бренду Hoco. Оптимальне поєднання ємності та потужності зробило його одним з найпопулярніших у категорії. Швидка зарядка 22.5W скорочує час зарядки смартфона до 1.5 годин. Система захисту MCU контролює температуру та струм у реальному часі для безпечної роботи.'},
+  6:{features:[['⚡','Потужність','22.5W швидка зарядка'],['💡','Дисплей','LED-дисплей рівня заряду'],['📊','Ємність','30000mAh'],['🔌','Порти','3 порти одночасно'],['🛡️','Захист','Повний захист від перегріву'],['🎨','Дизайн','Стильний матовий корпус']],full:'Baseus Star Lord — стильний павербанк зі зручним LED-дисплеєм. Підтримує швидку зарядку 22.5W та одночасну зарядку 3 пристроїв. Матовий корпус приємний на дотик та не збирає відбитки пальців. Відмінний вибір для тих хто цінує як функціональність так і зовнішній вигляд.'},
+  7:{features:[['⚡','Потужність','18W Fast Charge'],['📊','Ємність','20000mAh — 5+ зарядок'],['🔌','Порти','2×USB-A + 1×USB-C'],['⚖️','Вага','~440г'],['🎨','Дизайн','Мінімалістичний стиль Xiaomi'],['✈️','Авіа','Дозволений на борт']],full:'Xiaomi Mi Power Bank 3 20000mAh — золота середина між компактністю та ємністю. Пять зарядок смартфона в одному пристрої що вміщується у більшість сумок і рюкзаків. Надійна якість від Xiaomi підтверджена мільйонами продажів по всьому світу.'},
+  8:{features:[['⚡','Потужність','PD + QC 3.0'],['📊','Ємність','30000mAh'],['🔌','Порти','3 виходи одночасно'],['🛡️','Захист','Повний захист'],['💯','Чесність','Реальна ємність без обману'],['⚖️','Вага','~620г']],full:'Romoss Sense 8+ — павербанк від бренду Romoss що славиться чесною ємністю. На відміну від деяких конкурентів реальна ємність Romoss відповідає заявленій. Підтримує PD та QC 3.0 для швидкої зарядки. Ідеальний вибір для тривалих подорожей коли розетка недоступна довго.'},
+  9:{features:[['⚡','Потужність','65W USB-C PD'],['💻','Ноутбуки','MacBook та більшість ультрабуків'],['📊','Ємність','30000mAh'],['💡','Підсвічування','Статусне підсвічування заряду'],['🔌','Порти','USB-C + USB-A'],['👑','Клас','Преміум сегмент']],full:'Baseus Amblight 65W — преміальний вибір для тих хто потребує і великої ємності і потужної зарядки ноутбуків. 65W по USB-C PD дозволяє заряджати більшість ноутбуків. Унікальне підсвічування статусу заряду робить його впізнаваним. Флагманська модель лінійки Baseus.'},
+  10:{features:[['⚡','Потужність','65W PD нового покоління'],['💻','Ноутбуки','Всі ультрабуки з USB-C'],['📊','Ємність','20000mAh'],['🔌','Порти','3 пристрої одночасно'],['🛡️','Захист','Anti-scratch корпус'],['🆕','Версія','Покращений контролер v2']],full:'Baseus Adaman 2 — оновлена версія хітового Adaman з покращеним контролером заряду. 65W потужність для ноутбуків плюс 20000mAh ємності в компактному корпусі. Anti-scratch покриття захищає від подряпин. Відмінний вибір для ділових подорожей та роботи у кафе.'},
+};
+// Default details for products 11-40
+for(var _i=11;_i<=40;_i++){
+  if(!PROD_DETAILS[_i]){
+    PROD_DETAILS[_i]={
+      features:[
+        ['⚡','Швидка зарядка','QC/PD технологія — заряджає швидше у 3 рази'],
+        ['🔌','Порти','USB-A та Type-C для будь-яких пристроїв'],
+        ['📊','Велика ємність','Кілька повних зарядок смартфона'],
+        ['🛡️','Захист','Від перегріву, перезарядки, короткого замикання'],
+        ['✈️','Авіаперельоти','Дозволений до провезення на борту'],
+        ['📦','В комплекті','Павербанк та інструкція з використання'],
+      ],
+      full:'Надійний павербанк для щоденного використання. Забезпечує стабільну зарядку смартфонів, навушників, планшетів та інших гаджетів. Система захисту MCU контролює температуру, напругу та струм у реальному часі. Корпус виготовлено з якісного ABS пластику що витримує щоденне використання. Гарантія якості та повернення протягом 14 днів.'
+    };
+  }
+}
+// Details for non-powerbank items
+PROD_DETAILS[41]={features:[['🔵','Bluetooth','5.0 — стабільне зєднання до 10м'],['⏱️','Автономність','30 годин у режимі відтворення'],['🔇','Шумодав','Активне шумопоглинання ANC'],['🎵','Звук','Hi-Fi якість з глибокими басами'],['💬','Мікрофон','Вбудований для дзвінків'],['⚡','Зарядка','USB-C швидка зарядка']],full:'Бездротові навушники з преміальним звуком та активним шумопоглинанням. 30 годин автономної роботи дозволяють слухати музику весь день без підзарядки. Технологія Bluetooth 5.0 забезпечує стабільне зєднання навіть у людних місцях. Ідеальні для роботи, спорту та подорожей.'};
+PROD_DETAILS[42]={features:[['📹','Відео','Full HD 1080p — чітке зображення'],['👁️','Кут огляду','170° — вся дорога в кадрі'],['🌙','Нічний режим','WDR технологія для темряви'],['💾','Память','Підтримка карти до 128GB'],['🔄','Петля','Автоматичний перезапис'],['⚡','Живлення','від прикурювача авто']],full:'Авто-реєстратор Full HD 1080p з широким кутом огляду 170°. Технологія WDR забезпечує чітке зображення навіть вночі або в тумані. Автоматичний петльовий запис заповнює карту памяті циклічно. Захист від паркування фіксує удари та вібрації навіть при вимкненому двигуні.'};
+PROD_DETAILS[43]={features:[['🛡️','Захист','Від ударів та подряпин'],['🧲','Матеріал','Преміальний силікон'],['📱','Сумісність','Всі популярні моделі телефонів'],['🎨','Дизайн','Тонкий — не спотворює вигляд'],['🔧','Кнопки','Точні вирізи для всіх кнопок'],['⚡','Бездротова','Підтримка бездротової зарядки']],full:'Чохол Premium з преміального силікону захищає телефон від ударів, подряпин та пилу. Тонкий дизайн не додає зайвого обєму в кишені. Точні вирізи забезпечують повний доступ до всіх кнопок та портів. Матеріал не жовтіє з часом та приємний на дотик.'};
+PROD_DETAILS[44]={features:[['📶','Wi-Fi','Wi-Fi 6 (802.11ax) — найновіший стандарт'],['🚀','Швидкість','До 300 Мбіт/с'],['📡','Антени','4 зовнішні антени'],['🏠','Покриття','До 100 кв.м.'],['🔒','Захист','WPA3 шифрування'],['🔌','Порти','4×LAN + 1×WAN']],full:'WiFi роутер стандарту Wi-Fi 6 з підтримкою швидкості до 300 Мбіт/с. 4 потужні антени забезпечують стабільне покриття у всій квартирі. Підтримує одночасне підключення до 64 пристроїв без втрати швидкості. WPA3 шифрування захищає вашу мережу від несанкціонованого доступу.'};
+PROD_DETAILS[45]={features:[['🎨','Кольори','16 мільйонів кольорів'],['📱','Керування','Додаток для смартфона'],['🌐','Зєднання','Wi-Fi 2.4GHz'],['⏰','Таймер','Розклад увімкнення/вимкнення'],['🗣️','Голос','Alexa та Google Assistant'],['💡','Потужність','9W = 60W лампа розжарювання']],full:'Розумна LED-лампа з 16 мільйонами кольорів та керуванням зі смартфону. Налаштовуйте яскравість та колір під настрій — від теплого жовтого для відпочинку до яскравого білого для роботи. Підтримує голосове керування через Alexa та Google Assistant. Таймер дозволяє налаштувати автоматичне вмикання та вимикання.'};
+
+function openProdPage(id){
+  var p = null;
+  for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].id===id){p=PRODUCTS[i];break;} }
+  if(!p) return;
+  currentProdId = id;
+  var det = PROD_DETAILS[id] || PROD_DETAILS[1];
+
+  // Image
+  var imgWrap = document.getElementById('prodPageImg');
+  if(p.img){
+    imgWrap.innerHTML = '<img src="'+p.img+'" alt="'+p.name+'" style="width:100%;max-height:320px;object-fit:contain;" onerror="this.style.display=\'none\'">';
+  } else {
+    imgWrap.innerHTML = svgIcon(p.cat);
+  }
+
+  // Badge
+  var badgeEl = document.getElementById('prodPageBadge');
+  if(p.badge){ badgeEl.style.display='block'; badgeEl.textContent=p.badge; }
+  else { badgeEl.style.display='none'; }
+
+  // Info
+  document.getElementById('prodPageCat').textContent = CATEGORY_NAMES[p.cat]||p.cat;
+  document.getElementById('prodPageCatLabel').textContent = CATEGORY_NAMES[p.cat]||p.cat;
+  document.getElementById('prodPageName').textContent = p.name;
+
+  // Price
+  var priceBlock = document.getElementById('prodPagePriceBlock');
+  if(p.price==='0'){
+    priceBlock.innerHTML = '<div class="prod-page-price-ask">📞 Ціну уточнюйте у менеджера</div><div style="font-size:12px;color:#9CA3AF;margin-top:4px;">Напишіть нам у Telegram або зателефонуйте</div>';
+  } else {
+    priceBlock.innerHTML = '<div class="prod-page-price">&#x20B4;'+fmt(p.price)+'</div>';
+  }
+
+  // Features
+  var featHtml = '';
+  for(var f=0;f<det.features.length;f++){
+    var ft = det.features[f];
+    featHtml += '<div class="prod-page-feature">'
+      +'<div class="prod-page-feature-ico">'+ft[0]+'</div>'
+      +'<div class="prod-page-feature-text"><b>'+ft[1]+':</b> '+ft[2]+'</div>'
+      +'</div>';
+  }
+  document.getElementById('prodPageFeatures').innerHTML = featHtml;
+
+  // Full desc
+  document.getElementById('prodPageDescFull').textContent = det.full;
+
+  // Reset button
+  var btn = document.getElementById('prodPageCartBtn');
+  btn.textContent = '🛒 До кошика';
+  btn.classList.remove('added');
+  document.getElementById('qprod').textContent = '1';
+
+  // Show page
+  document.getElementById('prodPage').style.display = 'block';
+  document.getElementById('prodPage').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProdPage(){
+  document.getElementById('prodPage').style.display = 'none';
+  if(document.getElementById('catPage').style.display!=='block') document.body.style.overflow='';
+}
+
+function prodPageAddCart(){
+  if(!currentProdId) return;
+  var qty = parseInt(document.getElementById('qprod').textContent)||1;
+  addToCartWithQty(currentProdId, qty);
+  var btn = document.getElementById('prodPageCartBtn');
+  btn.textContent = '✅ Додано!';
+  btn.classList.add('added');
+  setTimeout(function(){ btn.textContent='🛒 До кошика'; btn.classList.remove('added'); }, 1500);
+  openCart();
+}
 
 // ========== NAV ==========
 window.addEventListener('scroll',function(){
