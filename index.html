@@ -790,12 +790,12 @@ footer{background:#070B14;border-top:1px solid rgba(255,255,255,.06);padding:24p
       <div class="bot-msg">
         👋 Привіт! Я бот магазину <b>Tekvy</b>. Чим можу допомогти?
         <div class="bot-btns">
-          <button class="bot-qbtn" onclick="botAns('catalog')">🛍 Каталог товарів</button>
-          <button class="bot-qbtn" onclick="botAns('price')">💰 Ціни</button>
-          <button class="bot-qbtn" onclick="botAns('delivery')">🚚 Доставка та оплата</button>
-          <button class="bot-qbtn" onclick="botAns('contacts')">📞 Контакти</button>
-          <button class="bot-qbtn" onclick="botAns('guarantee')">✅ Гарантія та повернення</button>
-          <button class="bot-qbtn" onclick="botAns('order')">🛒 Як зробити замовлення</button>
+          <button class="bot-qbtn" onclick="botAns('Які товари є в каталозі?')">🛍 Каталог товарів</button>
+          <button class="bot-qbtn" onclick="botAns('Які ціни на товари?')">💰 Ціни</button>
+          <button class="bot-qbtn" onclick="botAns('Як працює доставка та оплата?')">🚚 Доставка та оплата</button>
+          <button class="bot-qbtn" onclick="botAns('Які контакти магазину?')">📞 Контакти</button>
+          <button class="bot-qbtn" onclick="botAns('Яка гарантія та умови повернення?')">✅ Гарантія та повернення</button>
+          <button class="bot-qbtn" onclick="botAns('Як зробити замовлення?')">🛒 Як зробити замовлення</button>
         </div>
       </div>
     </div>
@@ -826,14 +826,34 @@ const CATEGORY_NAMES = {
   wireless:'Бездротовий зв\u0027язок',
   smarthome:'Розумний дім',
 };
-const BOT_KB = {
-  catalog:{keys:['товар','каталог','асортимент','що є','категор'],ans:'Наш каталог: Павербанки | Навушники | Авто-гаджети | Аксесуари | Бездротовий зв\u0027язок | Розумний дім'},
-  price:{keys:['ціна','скільки','вартість','грн','коштує'],ans:'Ціни: Павербанк Hoco 30000mAh — <b>985 грн</b> | Навушники — <b>2 190 грн</b> | Авто-реєстратор — <b>1 490 грн</b> | Чохол — <b>490 грн</b>'},
-  delivery:{keys:['доставк','нова пошта','укрпошта','оплат','накладен','передплат'],ans:'Доставка: Нова Пошта (1-2 дні), Укрпошта (2-4 дні). Передплата або накладений платіж.'},
-  contacts:{keys:['контакт','телефон','номер','telegram','viber'],ans:'Телефон: +380 97 976 56 39 | Email: rozetkaivan54@gmail.com | Пн-Нд: 10:00-19:00'},
-  guarantee:{keys:['гарантія','поверн','якість','брак','обмін'],ans:'Повернення протягом 14 днів. Обмін без зайвих питань!'},
-  order:{keys:['замовлен','купити','оформ','хочу'],ans:'1. Натисніть «До кошика» 2. Відкрийте кошик вгорі 3. Натисніть «Оформити замовлення» 4. Заповніть форму'},
-};
+const BOT_SYSTEM = `Ти — консультант інтернет-магазину Tekvy (Україна). Відповідай ТІЛЬКИ українською мовою. Будь дружнім, лаконічним і корисним. Не використовуй markdown — тільки звичайний текст.
+
+Інформація про магазин:
+- Телефон: +380 97 976 56 39
+- Email: rozetkaivan54@gmail.com
+- Telegram: t.me/+380979765639
+- Instagram: @tekvy.ua
+- Режим роботи: Пн–Нд 10:00–19:00
+
+Товари та ціни:
+- Павербанк Hoco J136B 30000mAh — 985 грн (22.5W + PD20W, 2xUSB-A/Type-C/microUSB, LED-дисплей)
+- Навушники бездротові — 2190 грн (Bluetooth 5.0, 30 год роботи, шумопоглинання)
+- Авто-реєстратор HD — 1490 грн (Full HD 1080p, кут огляду 170°, нічний режим)
+- Чохол Premium — 490 грн (силікон, захист від ударів, всі моделі)
+- WiFi роутер — 890 грн (Wi-Fi 6, до 300 Мбіт/с, 4 антени)
+- Розумна лампа — 650 грн (16 млн кольорів, керування з телефону, Wi-Fi)
+
+Доставка:
+- Нова Пошта: 1–2 дні
+- Укрпошта: 2–4 дні
+- Накладений платіж або передплата на картку
+
+Гарантія та повернення: 14 днів без зайвих питань.
+
+Якщо питання не стосується магазину — скажи що допомагаєш тільки з питаннями Tekvy і запропонуй зателефонувати.`;
+
+var botHistory = [];
+
 
 // ========== UTILS ==========
 function fmt(n){ return Number(n).toLocaleString('uk-UA'); }
@@ -860,7 +880,7 @@ function updateBadges(){
   var cb = document.getElementById('catCartBadge');
   var sc = document.getElementById('sideCartCount');
   b.style.display = t>0?'flex':'none'; b.textContent = t;
-  if(cb){ cb.style.display = t>0?'flex':'none'; cb.textContent = t; }
+  if(cb){ cb.style.display = t>0?'flex':'none'; cb.style.alignItems='center'; cb.style.justifyContent='center'; cb.textContent = t; }
   if(sc) sc.textContent = t>0?(t+' товар'+(t===1?'':'ів')):'';
 }
 
@@ -980,7 +1000,7 @@ function chQty(elId, d){
 function handleAddToCart(id){
   var qgEl = document.getElementById('qg'+id);
   var qvEl = document.getElementById('qv'+id);
-  var qty = parseInt(((qgEl||qvEl)||{textContent:'1'}).textContent)||1;
+  var qty = parseInt((qgEl||qvEl||{textContent:'1'}).textContent)||1;
   addToCartWithQty(id, qty);
   if(qgEl) qgEl.textContent='1';
   if(qvEl) qvEl.textContent='1';
@@ -1020,7 +1040,7 @@ function doSearch(q){
     if(p.name.toLowerCase().indexOf(ql)>-1||(CATEGORY_NAMES[p.cat]||'').toLowerCase().indexOf(ql)>-1) found.push(p);
   }
   drop.style.display='block';
-  if(!found.length){ drop.innerHTML='<div style="padding:14px;text-align:center;color:#9CA3AF;font-size:13px;">\u1F615 \u041d\u0456\u0447\u043e\u0433\u043e \u043d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e</div>'; return; }
+  if(!found.length){ drop.innerHTML='<div style="padding:14px;text-align:center;color:#9CA3AF;font-size:13px;">😕 Нічого не знайдено</div>'; return; }
   var html='';
   for(var i=0;i<found.length;i++){
     var p=found[i];
@@ -1081,7 +1101,7 @@ function openOrder(){
 }
 function closeOrder(){
   document.getElementById('orderModal').style.display='none';
-  document.body.style.overflow='';
+  if(document.getElementById('catPage').style.display!=='block') document.body.style.overflow='';
 }
 function selPay(t){
   document.getElementById('pay1').classList.toggle('sel',t==='prepay');
@@ -1106,7 +1126,7 @@ function submitOrder(){
     rows+='<div style="display:flex;justify-content:space-between;padding:3px 0;"><span>'+it.name+' \xd7'+it.qty+'</span><span style="font-weight:600;">&#x20B4;'+fmt(Number(it.price)*it.qty)+'</span></div>';
   }
   document.getElementById('successItems').innerHTML=rows;
-  document.getElementById('sTotal').textContent='&#x20B4;'+fmt(cartTotal());
+  document.getElementById('sTotal').innerHTML='&#x20B4;'+fmt(cartTotal());
   document.getElementById('sName').textContent=name;
   document.getElementById('sPhone').textContent=phone;
   document.getElementById('sCity').textContent=city+', '+np;
@@ -1119,7 +1139,7 @@ function submitOrder(){
 }
 function closeSuccess(){
   document.getElementById('successModal').style.display='none';
-  document.body.style.overflow='';
+  if(document.getElementById('catPage').style.display!=='block') document.body.style.overflow='';
 }
 document.getElementById('orderModal').addEventListener('click',function(e){ if(e.target===this) closeOrder(); });
 document.getElementById('successModal').addEventListener('click',function(e){ if(e.target===this) closeSuccess(); });
@@ -1179,27 +1199,47 @@ function addTyping(){
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
 function rmTyping(){var t=document.getElementById('botTyping');if(t)t.remove();}
-function botAns(key){
-  var d=BOT_KB[key];if(!d)return;
-  addTyping();setTimeout(function(){rmTyping();addBotMsg(d.ans,false);},600);
+function botAns(question){
+  addBotMsg(question, true);
+  addTyping();
+  botHistory.push({role:'user', content: question});
+  callClaudeAPI(question);
+}
+async function callClaudeAPI(userText){
+  try {
+    var msgs = botHistory.slice(-10);
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: BOT_SYSTEM,
+        messages: msgs
+      })
+    });
+    var data = await resp.json();
+    rmTyping();
+    var answer = (data.content && data.content[0] && data.content[0].text)
+      ? data.content[0].text
+      : 'Вибачте, сталась помилка. Зателефонуйте нам: +380 97 976 56 39';
+    botHistory.push({role:'assistant', content: answer});
+    addBotMsg(answer, false);
+  } catch(e) {
+    rmTyping();
+    addBotMsg('Вибачте, сталась помилка. Напишіть нам у <a href="https://t.me/+380979765639" style="color:var(--p);">Telegram</a> або зателефонуйте <b>+380 97 976 56 39</b>', false);
+  }
 }
 function sendBot(){
   var inp=document.querySelector('#chatPopup input');
   var txt=inp.value.trim();if(!txt)return;
-  inp.value='';addBotMsg(txt,true);addTyping();
-  setTimeout(function(){
-    rmTyping();
-    var low=txt.toLowerCase(),found=false;
-    for(var k in BOT_KB){
-      var d=BOT_KB[k];
-      for(var i=0;i<d.keys.length;i++){
-        if(low.indexOf(d.keys[i])>-1){addBotMsg(d.ans,false);found=true;break;}
-      }
-      if(found) break;
-    }
-    if(!found) addBotMsg('\u041f\u0438\u0448\u0456\u0442\u044c \u043d\u0430\u043c: <a href="https://t.me/+380979765639" style="color:var(--p);">Telegram</a> \u0430\u0431\u043e \u0434\u0437\u0432\u043e\u043d\u0456\u0442\u044c <b>+380 97 976 56 39</b>',false);
-  },800);
+  inp.value='';
+  addBotMsg(txt,true);
+  addTyping();
+  botHistory.push({role:'user', content: txt});
+  callClaudeAPI(txt);
 }
+
 
 // ========== NAV ==========
 window.addEventListener('scroll',function(){
