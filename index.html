@@ -1235,7 +1235,10 @@ function openCatPage(key){
 }
 function closeCatPage(){
   document.getElementById('catPage').style.display='none';
-  document.body.style.overflow='';
+  // Only unlock scroll if prodPage is also closed
+  if(document.getElementById('prodPage').style.display !== 'block'){
+    document.body.style.overflow='';
+  }
 }
 function setCatView(v){
   catView=v;
@@ -1270,7 +1273,7 @@ function openOrder(){
 }
 function closeOrder(){
   document.getElementById('orderModal').style.display='none';
-  if(document.getElementById('catPage').style.display!=='block') document.body.style.overflow='';
+  if(document.getElementById('catPage').style.display!=='block' && document.getElementById('prodPage').style.display!=='block') document.body.style.overflow='';
 }
 function selPay(t){
   document.getElementById('pay1').classList.toggle('sel',t==='prepay');
@@ -1308,7 +1311,7 @@ function submitOrder(){
 }
 function closeSuccess(){
   document.getElementById('successModal').style.display='none';
-  if(document.getElementById('catPage').style.display!=='block') document.body.style.overflow='';
+  if(document.getElementById('catPage').style.display!=='block' && document.getElementById('prodPage').style.display!=='block') document.body.style.overflow='';
 }
 document.getElementById('orderModal').addEventListener('click',function(e){ if(e.target===this) closeOrder(); });
 document.getElementById('successModal').addEventListener('click',function(e){ if(e.target===this) closeSuccess(); });
@@ -1412,6 +1415,7 @@ function sendBot(){
 
 // ========== PRODUCT PAGE ==========
 var currentProdId = null;
+var prodPageSource = null; // "cat" або "main"
 
 var PROD_DETAILS = {
   1:{features:[['⚡','Потужність','22.5W QC + PD20W — заряджає iPhone за ~1.5 год'],['🔌','Порти','2×USB-A, 1×Type-C, 1×microUSB — 3 пристрої одночасно'],['📊','Ємність','30000mAh — до 7 зарядок смартфона'],['💡','Дисплей','LED-індикатор точного рівня заряду'],['🛡️','Захист','Від перегріву, перезарядки, короткого замикання'],['⚖️','Вага','~580г — зручно в рюкзак']],full:'Hoco J136B Sirui — один з найпопулярніших павербанків на українському ринку. Завдяки ємності 30000mAh він здатен зарядити смартфон до 7 разів поспіль без підзарядки. Технологія 22.5W скорочує час зарядки в 3 рази порівняно зі стандартними 5W. Підтримує одночасну зарядку 3 пристроїв через різні порти. Корпус з вогнетривкого ABS+PC захищає від пошкоджень. Незамінний під час відключень електроенергії.'},
@@ -1518,6 +1522,9 @@ function openProdPage(id){
   btn.classList.remove('added');
   document.getElementById('qprod').textContent = '1';
 
+  // Track source
+  prodPageSource = document.getElementById('catPage').style.display === 'block' ? 'cat' : 'main';
+
   // Show page
   document.getElementById('prodPage').style.display = 'block';
   document.getElementById('prodPage').scrollTop = 0;
@@ -1534,7 +1541,15 @@ function switchProdImg(thumb){
 }
 function closeProdPage(){
   document.getElementById('prodPage').style.display = 'none';
-  if(document.getElementById('catPage').style.display!=='block') document.body.style.overflow='';
+  if(prodPageSource === 'cat'){
+    // Повернутись в каталог категорії
+    document.getElementById('catPage').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  } else {
+    // Повернутись на головну
+    document.body.style.overflow = '';
+  }
+  prodPageSource = null;
 }
 
 function prodPageAddCart(){
