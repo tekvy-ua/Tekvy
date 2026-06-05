@@ -463,23 +463,40 @@ footer{background:#070B14;border-top:1px solid rgba(255,255,255,.06);padding:24p
 @media(max-width:768px){
   .prod-page-inner{grid-template-columns:1fr;}
 }
+
+/* ===== BOTTOM NAV (mobile) ===== */
+#bottomNav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:850;
+  background:white;border-top:1px solid var(--border);
+  padding:8px 0 env(safe-area-inset-bottom,8px);}
+.bnav-inner{display:flex;justify-content:space-around;align-items:center;}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:none;border:none;cursor:pointer;padding:4px 12px;font-family:'DM Sans',sans-serif;}
+.bnav-ico{font-size:20px;line-height:1;}
+.bnav-lbl{font-size:10px;font-weight:600;color:var(--gray);}
+.bnav-btn.active .bnav-lbl{color:var(--p);}
+@media(max-width:768px){
+  #bottomNav{display:block;}
+  body{padding-bottom:65px;}
+  #chatBtn{bottom:80px;}
+}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#hero" class="nav-logo">
+  <a href="#cats" onclick="closeAllPages()" class="nav-logo">
     <div class="logo-icon">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </div>
     Tekvy<span class="logo-dot">.</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#cats">Каталог</a></li>
-    <li><a href="#about">Про нас</a></li>
-    <li><a href="#delivery">Доставка</a></li>
-    <li><a href="#contacts">Контакти</a></li>
+    <li><a href="#cats" onclick="closeAllPages()">Каталог</a></li>
+    <li><a href="#hero" onclick="closeAllPages()">Головна</a></li>
+    <li><a href="#about" onclick="closeAllPages()">Про нас</a></li>
+    <li><a href="#delivery" onclick="closeAllPages()">Доставка</a></li>
+    <li><a href="#contacts" onclick="closeAllPages()">Контакти</a></li>
   </ul>
   <!-- Phone -->
   <a href="tel:+380979765639" class="nav-phone">
@@ -682,10 +699,10 @@ footer{background:#070B14;border-top:1px solid rgba(255,255,255,.06);padding:24p
   <div class="f-logo">Tekvy<em>.</em></div>
   <div class="f-copy">© 2026 Tekvy. Всі права захищені.</div>
   <div class="f-nav">
-    <a href="#cats">Категорії</a>
-    <a href="#prods">Товари</a>
-    <a href="#delivery">Доставка</a>
-    <a href="#contacts">Контакти</a>
+    <a href="#cats" onclick="closeAllPages()">Каталог</a>
+    <a href="#hero" onclick="closeAllPages()">Головна</a>
+    <a href="#delivery" onclick="closeAllPages()">Доставка</a>
+    <a href="#contacts" onclick="closeAllPages()">Контакти</a>
   </div>
 </footer>
 
@@ -789,12 +806,20 @@ footer{background:#070B14;border-top:1px solid rgba(255,255,255,.06);padding:24p
 
 <!-- CATEGORY PAGE -->
 <div id="catPage">
-  <div class="cat-page-nav">
-    <button class="cat-back-btn" onclick="closeCatPage()">
+  <div class="cat-page-nav" style="gap:8px;flex-wrap:wrap;">
+    <button class="cat-back-btn" onclick="closeCatPage();window.location='#cats'">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
       Назад
     </button>
     <div id="catPageTitle"></div>
+    <div style="display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;" id="catQuickLinks">
+      <button onclick="openCatPage('powerbanks')" style="background:var(--light);border:none;border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--p);cursor:pointer;">🔋</button>
+      <button onclick="openCatPage('headphones')" style="background:var(--light);border:none;border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--p);cursor:pointer;">🎧</button>
+      <button onclick="openCatPage('auto')" style="background:var(--light);border:none;border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--p);cursor:pointer;">🚗</button>
+      <button onclick="openCatPage('accessories')" style="background:var(--light);border:none;border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--p);cursor:pointer;">💜</button>
+      <button onclick="openCatPage('wireless')" style="background:var(--light);border:none;border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--p);cursor:pointer;">📶</button>
+      <button onclick="openCatPage('smarthome')" style="background:var(--light);border:none;border-radius:20px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--p);cursor:pointer;">🏠</button>
+    </div>
     <button class="nav-icon-btn" onclick="openCart()" style="position:relative;margin-left:auto;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
       <span id="catCartBadge" style="display:none;position:absolute;top:-5px;right:-5px;background:var(--p3);color:white;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;align-items:center;justify-content:center;line-height:18px;text-align:center;"></span>
@@ -1233,6 +1258,14 @@ function openCatPage(key){
   document.getElementById('catPage').scrollTop=0;
   document.body.style.overflow='hidden';
 }
+
+function closeAllPages(){
+  document.getElementById('prodPage').style.display = 'none';
+  document.getElementById('catPage').style.display = 'none';
+  document.body.style.overflow = '';
+  prodPageSource = null;
+  currentCatKey = '';
+}
 function closeCatPage(){
   document.getElementById('catPage').style.display='none';
   // Only unlock scroll if prodPage is also closed
@@ -1571,5 +1604,31 @@ window.addEventListener('scroll',function(){
 // ========== INIT ==========
 renderProds();
 </script>
+
+<!-- BOTTOM NAV (mobile) -->
+<div id="bottomNav">
+  <div class="bnav-inner">
+    <button class="bnav-btn" onclick="closeAllPages();window.location='#cats'">
+      <span class="bnav-ico">🛍️</span>
+      <span class="bnav-lbl">Каталог</span>
+    </button>
+    <button class="bnav-btn" onclick="openCatPage('powerbanks')">
+      <span class="bnav-ico">🔋</span>
+      <span class="bnav-lbl">Павербанки</span>
+    </button>
+    <button class="bnav-btn" onclick="openCart()">
+      <span class="bnav-ico">🛒</span>
+      <span class="bnav-lbl">Кошик</span>
+    </button>
+    <button class="bnav-btn" onclick="closeAllPages();window.location='#contacts'">
+      <span class="bnav-ico">📞</span>
+      <span class="bnav-lbl">Контакти</span>
+    </button>
+    <button class="bnav-btn" onclick="closeAllPages();window.location='#hero'">
+      <span class="bnav-ico">🏠</span>
+      <span class="bnav-lbl">Про нас</span>
+    </button>
+  </div>
+</div>
 </body>
 </html>
